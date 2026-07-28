@@ -18,17 +18,9 @@ export function PropertyForm({ property, onClose }: PropertyFormProps) {
   const isEditing = !!property
   
   const [name, setName] = useState(property?.name ?? '')
-  const [propertyType, setPropertyType] = useState(property?.property_type ?? 'apartment')
   const [location, setLocation] = useState(property?.location ?? '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  const PROPERTY_TYPES = [
-    { value: 'apartment', label: t.properties.form.types.apartment },
-    { value: 'house', label: t.properties.form.types.house },
-    { value: 'commercial', label: t.properties.form.types.commercial },
-    { value: 'compound', label: t.properties.form.types.compound },
-  ]
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -42,13 +34,13 @@ export function PropertyForm({ property, onClose }: PropertyFormProps) {
     if (isEditing) {
       const { error: err } = await supabase
         .from('properties')
-        .update({ name, property_type: propertyType, location })
+        .update({ name, location })
         .eq('id', property.id)
       if (err) { setError(err.message); setLoading(false); return }
     } else {
       const { error: err } = await supabase
         .from('properties')
-        .insert({ landlord_id: user.id, name, property_type: propertyType, location })
+        .insert({ landlord_id: user.id, name, property_type: 'mixed', location })
       if (err) { setError(err.message); setLoading(false); return }
     }
 
@@ -80,22 +72,9 @@ export function PropertyForm({ property, onClose }: PropertyFormProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              placeholder="e.g. Mbezi Beach Apartments"
+              placeholder="e.g. Mradi wa Kasulu"
               className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
             />
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-sm text-slate-300 font-medium">{t.properties.form.type}</label>
-            <select
-              value={propertyType}
-              onChange={(e) => setPropertyType(e.target.value)}
-              className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
-            >
-              {PROPERTY_TYPES.map((t) => (
-                <option key={t.value} value={t.value}>{t.label}</option>
-              ))}
-            </select>
           </div>
 
           <div className="space-y-1.5">
@@ -105,7 +84,7 @@ export function PropertyForm({ property, onClose }: PropertyFormProps) {
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               required
-              placeholder="e.g. Kinondoni, Dar es Salaam"
+              placeholder="e.g. Kasulu, Kigoma"
               className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
             />
           </div>

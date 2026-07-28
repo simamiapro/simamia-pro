@@ -126,6 +126,16 @@ export function PropertyDetailClient({ property, landlord, totalUnits }: Propert
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div>
                       <p className="text-white font-semibold">{unit.custom_name}</p>
+                      <p className="text-slate-400 text-xs mt-0.5 mb-1">
+                        {
+                          unit.unit_type === 'swahili_room' ? 'Chumba Uswahilini' :
+                          unit.unit_type === 'hostel_room' ? 'Chumba cha Hostel' :
+                          unit.unit_type === 'commercial' ? 'Fremu ya Biashara' :
+                          unit.unit_type === 'house' ? 'Nyumba Nzima' :
+                          unit.unit_type === 'bedsitter' ? 'Bedsitter / Studio' :
+                          'Ghorofa / Apartment'
+                        }
+                      </p>
                       <p className="text-emerald-400 text-sm font-medium">{formatTZS(unit.monthly_rent)}/mwezi</p>
                     </div>
                     <div className="flex gap-1">

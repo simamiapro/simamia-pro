@@ -5,7 +5,7 @@ export const dictionaries = {
     // Navigation
     nav: {
       dashboard: 'Dashibodi',
-      properties: 'Mali',
+      properties: 'Miradi',
       tenants: 'Wapangaji',
       sms: 'SMS',
       topup: 'Ongeza Salio',
@@ -67,29 +67,33 @@ export const dictionaries = {
         btn: 'Boresha Akaunti',
       }
     },
-    // Properties
+    // Properties -> Projects
     properties: {
-      title: 'Mali Zangu',
-      add_new: 'Ongeza Mali',
-      no_properties: 'Hujajaza mali yoyote.',
-      add_first: 'Ongeza mali yako ya kwanza kuanza kudhibiti.',
+      title: 'Miradi Yangu',
+      add_new: 'Ongeza Mradi',
+      no_properties: 'Hujajaza mradi wowote.',
+      add_first: 'Ongeza mradi wako wa kwanza kuanza kudhibiti.',
       form: {
-        name: 'Jina la Mali',
+        name: 'Jina la Mradi',
         location: 'Eneo (Mtaa/Wilaya)',
-        type: 'Aina ya Mali',
-        types: {
-          apartment: 'Ghorofa / Vyumba (Apartment)',
-          house: 'Nyumba ya Kujitegemea',
-          commercial: 'Fremu / Biashara',
-          compound: 'Uswahilini / Compound (Vyumba Mchanganyiko)',
-        }
       }
     },
     // Units
     units: {
       title: 'Vyumba / Nyumba',
-      add_new: 'Ongeza Chumba',
+      add_new: 'Ongeza Chumba / Kitengo',
       monthly_rent: 'Kodi kwa Mwezi',
+      form: {
+        type: 'Aina ya Kitengo',
+        types: {
+          apartment: 'Ghorofa / Apartment',
+          house: 'Nyumba Nzima',
+          commercial: 'Fremu ya Biashara',
+          swahili_room: 'Chumba Uswahilini',
+          hostel_room: 'Chumba cha Hostel',
+          bedsitter: 'Bedsitter / Studio',
+        }
+      },
       status: {
         occupied: 'Kimepangishwa',
         vacant: 'Kipo Wazi'
@@ -185,7 +189,7 @@ export const dictionaries = {
     // Navigation
     nav: {
       dashboard: 'Dashboard',
-      properties: 'Properties',
+      properties: 'Projects',
       tenants: 'Tenants',
       sms: 'SMS',
       topup: 'Top Up',
@@ -247,29 +251,33 @@ export const dictionaries = {
         btn: 'Upgrade Account',
       }
     },
-    // Properties
+    // Properties -> Projects
     properties: {
-      title: 'My Properties',
-      add_new: 'Add Property',
-      no_properties: 'No properties added yet.',
-      add_first: 'Add your first property to start managing.',
+      title: 'My Projects',
+      add_new: 'Add Project',
+      no_properties: 'You have not added any projects yet.',
+      add_first: 'Add your first project to start managing.',
       form: {
-        name: 'Property Name',
+        name: 'Project Name',
         location: 'Location (Street/District)',
-        type: 'Property Type',
-        types: {
-          apartment: 'Apartment',
-          house: 'Standalone House',
-          commercial: 'Commercial / Shop',
-          compound: 'Compound / Swahili House (Mixed Units)',
-        }
       }
     },
     // Units
     units: {
-      title: 'Units',
+      title: 'Units / Rooms',
       add_new: 'Add Unit',
       monthly_rent: 'Monthly Rent',
+      form: {
+        type: 'Unit Type',
+        types: {
+          apartment: 'Apartment',
+          house: 'Standalone House',
+          commercial: 'Shop / Commercial',
+          swahili_room: 'Swahili Room',
+          hostel_room: 'Hostel Room',
+          bedsitter: 'Bedsitter / Studio',
+        }
+      },
       status: {
         occupied: 'Occupied',
         vacant: 'Vacant'

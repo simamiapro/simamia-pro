@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { PropertyForm } from '@/components/shared/property-form'
 import { formatTZS } from '@/lib/utils'
 import type { Landlord, Property, Unit } from '@/types/database'
+import { useLanguage } from '@/lib/i18n/language-context'
 
 interface PropertyWithUnits extends Property {
   units: Unit[]
@@ -18,23 +19,15 @@ interface PropertiesClientProps {
   landlord: Landlord
 }
 
-const PROPERTY_TYPE_LABELS: Record<string, string> = {
-  apartment: 'Ghorofa',
-  house: 'Nyumba',
-  commercial: 'Fremu ya Biashara',
-  bedsitter: 'Bedsitter',
-  plot: 'Kipande cha Ardhi',
-  compound: 'Uswahilini / Compound',
-}
-
 export function PropertiesClient({ properties, landlord }: PropertiesClientProps) {
   const router = useRouter()
+  const { t } = useLanguage()
   const [showForm, setShowForm] = useState(false)
   const [editProperty, setEditProperty] = useState<Property | undefined>()
   const [menuOpen, setMenuOpen] = useState<string | null>(null)
 
   async function handleDelete(id: string) {
-    if (!confirm('Je, una uhakika wa kufuta mali hii? Vyumba vyote vitafutwa pia.')) return
+    if (!confirm('Je, una uhakika wa kufuta mradi huu? Vyumba vyote vitafutwa pia.')) return
     const supabase = createClient()
     await supabase.from('properties').delete().eq('id', id)
     router.refresh()
@@ -45,15 +38,15 @@ export function PropertiesClient({ properties, landlord }: PropertiesClientProps
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Mali Zangu</h1>
-          <p className="text-slate-400 text-sm mt-1">{properties.length} mali zilizosajiliwa</p>
+          <h1 className="text-2xl font-bold text-white">{t.properties.title}</h1>
+          <p className="text-slate-400 text-sm mt-1">{properties.length} miradi iliyosajiliwa</p>
         </div>
         <button
           onClick={() => { setEditProperty(undefined); setShowForm(true) }}
           className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl font-medium text-sm transition shadow-lg shadow-emerald-500/20"
         >
           <Plus size={16} />
-          <span className="hidden sm:inline">Ongeza Mali</span>
+          <span className="hidden sm:inline">{t.properties.add_new}</span>
         </button>
       </div>
 
@@ -61,13 +54,13 @@ export function PropertiesClient({ properties, landlord }: PropertiesClientProps
       {properties.length === 0 && (
         <div className="text-center py-20 bg-slate-900/40 border border-slate-800 rounded-2xl">
           <Building2 size={48} className="mx-auto text-slate-600 mb-4" />
-          <h3 className="text-white font-semibold mb-2">Bado huna mali</h3>
-          <p className="text-slate-400 text-sm mb-6">Anza kwa kuongeza mali yako ya kwanza</p>
+          <h3 className="text-white font-semibold mb-2">{t.properties.no_properties}</h3>
+          <p className="text-slate-400 text-sm mb-6">{t.properties.add_first}</p>
           <button
             onClick={() => { setEditProperty(undefined); setShowForm(true) }}
             className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl font-medium text-sm transition"
           >
-            Ongeza Mali
+            {t.properties.add_new}
           </button>
         </div>
       )}
@@ -91,13 +84,11 @@ export function PropertiesClient({ properties, landlord }: PropertiesClientProps
                     </div>
                     <div className="min-w-0">
                       <p className="text-white font-semibold truncate">
-                        {property.name || (PROPERTY_TYPE_LABELS[property.property_type] ?? property.property_type)}
+                        {property.name || 'Mradi Usio na Jina'}
                       </p>
                       <div className="flex items-center gap-1 text-slate-400 text-xs mt-0.5">
                         <MapPin size={11} />
                         <span className="truncate">{property.location}</span>
-                        <span className="mx-1">•</span>
-                        <span className="truncate">{PROPERTY_TYPE_LABELS[property.property_type] ?? property.property_type}</span>
                       </div>
                     </div>
                   </div>
@@ -118,13 +109,13 @@ export function PropertiesClient({ properties, landlord }: PropertiesClientProps
                             onClick={() => { setEditProperty(property); setShowForm(true); setMenuOpen(null) }}
                             className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-slate-300 hover:text-white hover:bg-slate-700 transition"
                           >
-                            <Pencil size={14} /> Hariri
+                            <Pencil size={14} /> {t.common.edit}
                           </button>
                           <button
                             onClick={() => { handleDelete(property.id); setMenuOpen(null) }}
                             className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 transition"
                           >
-                            <Trash2 size={14} /> Futa
+                            <Trash2 size={14} /> {t.common.delete}
                           </button>
                         </div>
                       </>
@@ -149,50 +140,24 @@ export function PropertiesClient({ properties, landlord }: PropertiesClientProps
                 </div>
               </div>
 
-              {/* Units preview */}
-              {property.units.length > 0 && (
-                <div className="px-5 pb-4 space-y-1.5">
-                  {property.units.slice(0, 3).map((unit) => (
-                    <div key={unit.id} className="flex items-center justify-between py-1.5 px-3 bg-slate-800/50 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <Home size={12} className="text-slate-500" />
-                        <span className="text-slate-300 text-xs font-medium truncate">{unit.custom_name}</span>
-                      </div>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                        unit.status === 'occupied'
-                          ? 'bg-emerald-500/15 text-emerald-400'
-                          : 'bg-slate-700/60 text-slate-400'
-                      }`}>
-                        {unit.status === 'occupied' ? 'Imekaliwa' : 'Wazi'}
-                      </span>
-                    </div>
-                  ))}
-                  {property.units.length > 3 && (
-                    <p className="text-slate-500 text-xs text-center py-1">
-                      +{property.units.length - 3} zaidi...
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {/* View detail link */}
-              <Link
-                href={`/properties/${property.id}`}
-                className="flex items-center justify-between px-5 py-3 border-t border-slate-800 text-emerald-400 hover:text-emerald-300 text-sm font-medium transition"
-              >
-                <span>Angalia Vyumba</span>
-                <ChevronRight size={16} />
-              </Link>
+              {/* View button */}
+              <div className="px-5 pb-5">
+                <Link
+                  href={`/properties/${property.id}`}
+                  className="flex items-center justify-center gap-2 w-full bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition group-hover:bg-emerald-600/10 group-hover:text-emerald-400 group-hover:border-emerald-500/30 border border-transparent"
+                >
+                  Fungua Mradi <ChevronRight size={14} />
+                </Link>
+              </div>
             </div>
           )
         })}
       </div>
 
-      {/* Property form modal */}
       {showForm && (
         <PropertyForm
           property={editProperty}
-          onClose={() => { setShowForm(false); setEditProperty(undefined) }}
+          onClose={() => setShowForm(false)}
         />
       )}
     </div>

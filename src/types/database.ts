@@ -30,6 +30,7 @@ export interface Unit {
   id: string
   property_id: string
   custom_name: string
+  unit_type: string
   monthly_rent: number
   unit_photo_url: string | null
   status: UnitStatus

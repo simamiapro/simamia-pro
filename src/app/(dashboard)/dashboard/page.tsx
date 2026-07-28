@@ -65,7 +65,7 @@ export default async function DashboardPage() {
           {isPremium ? (
             <span className="text-emerald-400/80 font-medium">Premium Account</span>
           ) : (
-            <span className="text-amber-400/80 font-medium">Leniency Account</span>
+            <span className="text-amber-400/80 font-medium">Toleo la Bure</span>
           )}
         </p>
       </div>

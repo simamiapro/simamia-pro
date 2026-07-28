@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Loader2, X, ImagePlus, Lock } from 'lucide-react'
 import type { Unit } from '@/types/database'
+import { useLanguage } from '@/lib/i18n/language-context'
 
 interface UnitFormProps {
   propertyId: string
@@ -16,8 +17,11 @@ interface UnitFormProps {
 
 export function UnitForm({ propertyId, unit, onClose, tierLocked, totalUnits }: UnitFormProps) {
   const router = useRouter()
+  const { t } = useLanguage()
   const isEditing = !!unit
   const fileRef = useRef<HTMLInputElement>(null)
+  
+  const [unitType, setUnitType] = useState(unit?.unit_type ?? 'apartment')
   const [customName, setCustomName] = useState(unit?.custom_name ?? '')
   const [monthlyRent, setMonthlyRent] = useState(unit?.monthly_rent?.toString() ?? '')
   const [status, setStatus] = useState<'vacant' | 'occupied'>(unit?.status ?? 'vacant')
@@ -25,6 +29,15 @@ export function UnitForm({ propertyId, unit, onClose, tierLocked, totalUnits }: 
   const [photoPreview, setPhotoPreview] = useState<string | null>(unit?.unit_photo_url ?? null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const UNIT_TYPES = [
+    { value: 'apartment', label: t.units.form.types.apartment },
+    { value: 'house', label: t.units.form.types.house },
+    { value: 'commercial', label: t.units.form.types.commercial },
+    { value: 'swahili_room', label: t.units.form.types.swahili_room },
+    { value: 'hostel_room', label: t.units.form.types.hostel_room },
+    { value: 'bedsitter', label: t.units.form.types.bedsitter },
+  ]
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -63,6 +76,7 @@ export function UnitForm({ propertyId, unit, onClose, tierLocked, totalUnits }: 
 
     const payload = {
       property_id: propertyId,
+      unit_type: unitType,
       custom_name: customName,
       monthly_rent: parseInt(monthlyRent, 10) || 0,
       status,
@@ -83,9 +97,9 @@ export function UnitForm({ propertyId, unit, onClose, tierLocked, totalUnits }: 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-slate-900 border border-slate-700/50 rounded-2xl w-full max-w-md shadow-2xl">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-          <h2 className="text-white font-semibold">{isEditing ? 'Hariri Chumba' : 'Ongeza Chumba Kipya'}</h2>
+      <div className="bg-slate-900 border border-slate-700/50 rounded-2xl w-full max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 sticky top-0 bg-slate-900 z-10">
+          <h2 className="text-white font-semibold">{isEditing ? t.common.edit : t.units.add_new}</h2>
           <button onClick={onClose} className="text-slate-400 hover:text-white transition">
             <X size={18} />
           </button>
@@ -99,7 +113,7 @@ export function UnitForm({ propertyId, unit, onClose, tierLocked, totalUnits }: 
             </div>
             <h3 className="text-white font-semibold mb-2">Kikomo Kimefikiwa</h3>
             <p className="text-slate-400 text-sm mb-6">
-              Akaunti ya Leniency inaruhusu vyumba 5 tu. Panda daraja la Premium kupata nafasi zaidi.
+              Toleo la Bure linaruhusu vyumba 5 tu. Panda daraja la Premium kupata nafasi zaidi.
             </p>
             <button
               onClick={onClose}
@@ -138,7 +152,20 @@ export function UnitForm({ propertyId, unit, onClose, tierLocked, totalUnits }: 
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm text-slate-300 font-medium">Jina la Chumba</label>
+              <label className="text-sm text-slate-300 font-medium">{t.units.form.type}</label>
+              <select
+                value={unitType}
+                onChange={(e) => setUnitType(e.target.value)}
+                className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
+              >
+                {UNIT_TYPES.map((t) => (
+                  <option key={t.value} value={t.value}>{t.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm text-slate-300 font-medium">Jina la Chumba / Kitengo</label>
               <input
                 type="text"
                 value={customName}
@@ -150,7 +177,7 @@ export function UnitForm({ propertyId, unit, onClose, tierLocked, totalUnits }: 
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm text-slate-300 font-medium">Kodi ya Mwezi (TZS)</label>
+              <label className="text-sm text-slate-300 font-medium">{t.units.monthly_rent} (TZS)</label>
               <input
                 type="number"
                 value={monthlyRent}
@@ -169,18 +196,18 @@ export function UnitForm({ propertyId, unit, onClose, tierLocked, totalUnits }: 
                 onChange={(e) => setStatus(e.target.value as 'vacant' | 'occupied')}
                 className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
               >
-                <option value="vacant">Wazi</option>
-                <option value="occupied">Imekaliwa</option>
+                <option value="vacant">{t.units.status.vacant}</option>
+                <option value="occupied">{t.units.status.occupied}</option>
               </select>
             </div>
 
             <div className="flex gap-3 pt-2">
               <button type="button" onClick={onClose} className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white text-sm transition">
-                Ghairi
+                {t.common.cancel}
               </button>
               <button type="submit" disabled={loading} className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-medium text-sm flex items-center justify-center gap-2 transition">
                 {loading && <Loader2 size={14} className="animate-spin" />}
-                {isEditing ? 'Hifadhi' : 'Ongeza'}
+                {isEditing ? t.common.save : t.common.add}
               </button>
             </div>
           </form>
