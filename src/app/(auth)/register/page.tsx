@@ -5,47 +5,83 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
-import { Eye, EyeOff, Loader2, UserPlus } from 'lucide-react'
+import { Loader2, UserPlus, Phone, KeyRound, User } from 'lucide-react'
 import { LanguageSwitcher } from '@/components/shared/language-switcher'
 import { useLanguage } from '@/lib/i18n/language-context'
 
 export default function RegisterPage() {
   const router = useRouter()
+  const [step, setStep] = useState<1 | 2>(1)
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
+  const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const { t } = useLanguage()
 
-  async function handleRegister(e: React.FormEvent) {
+  async function handleSendOtp(e: React.FormEvent) {
     e.preventDefault()
-    if (password.length < 8) {
-      setError('Nywila lazima iwe na herufi 8 au zaidi.')
-      return
-    }
     setLoading(true)
     setError(null)
 
-    const supabase = createClient()
-    const { error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { name, phone },
-      },
-    })
-
-    if (authError) {
-      setError(authError.message)
+    if (name.length < 2) {
+      setError('Jina lako lazima liwe na herufi mbili au zaidi.')
       setLoading(false)
       return
     }
 
-    // The handle_new_user trigger auto-creates the landlords row
+    let formattedPhone = phone.trim()
+    if (!formattedPhone.startsWith('+')) {
+      formattedPhone = '+' + formattedPhone
+    }
+
+    const supabase = createClient()
+    const { error: authError } = await supabase.auth.signInWithOtp({
+      phone: formattedPhone,
+      options: {
+        data: {
+          name,
+          phone: formattedPhone
+        }
+      }
+    })
+
+    if (authError) {
+      console.error(authError)
+      setError(t.common.error + ': ' + authError.message)
+      setLoading(false)
+      return
+    }
+
+    setLoading(false)
+    setStep(2)
+  }
+
+  async function handleVerifyOtp(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+
+    let formattedPhone = phone.trim()
+    if (!formattedPhone.startsWith('+')) {
+      formattedPhone = '+' + formattedPhone
+    }
+
+    const supabase = createClient()
+    const { error: authError } = await supabase.auth.verifyOtp({
+      phone: formattedPhone,
+      token: otp.trim(),
+      type: 'sms',
+    })
+
+    if (authError) {
+      console.error(authError)
+      setError(t.common.error + ': ' + authError.message)
+      setLoading(false)
+      return
+    }
+
     router.push('/dashboard')
     router.refresh()
   }
@@ -70,98 +106,106 @@ export default function RegisterPage() {
           <p className="text-slate-400 text-sm">{t.auth.register_subtitle}</p>
         </div>
 
-        <form onSubmit={handleRegister} className="space-y-4">
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm">
-              {error}
-            </div>
-          )}
+        {error && (
+          <div className="mb-4 bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm">
+            {error}
+          </div>
+        )}
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="col-span-2 space-y-1.5">
+        {step === 1 ? (
+          <form onSubmit={handleSendOtp} className="space-y-4">
+            <div className="space-y-1.5">
               <label htmlFor="reg-name" className="text-sm text-slate-300 font-medium">
                 {t.tenants.form.name}
               </label>
-              <input
-                id="reg-name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                placeholder="Jina lako"
-                className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
-              />
+              <div className="relative">
+                <input
+                  id="reg-name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  placeholder="Jina lako kamili"
+                  className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-10 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
+                />
+                <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              </div>
             </div>
 
-            <div className="col-span-2 space-y-1.5">
+            <div className="space-y-1.5">
               <label htmlFor="reg-phone" className="text-sm text-slate-300 font-medium">
-                {t.tenants.form.phone}
+                {t.auth.phone}
               </label>
-              <input
-                id="reg-phone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
-                placeholder="0712 345 678"
-                className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
-              />
+              <div className="relative">
+                <input
+                  id="reg-phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                  placeholder="+2557XXXXXXXX"
+                  className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-10 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
+                />
+                <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              </div>
+              <p className="text-xs text-slate-500 mt-1">Mfano: +255712345678 au +254712345678</p>
             </div>
-          </div>
 
-          <div className="space-y-1.5">
-            <label htmlFor="reg-email" className="text-sm text-slate-300 font-medium">
-              {t.auth.email}
-            </label>
-            <input
-              id="reg-email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="mfano@barua.com"
-              className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <label htmlFor="reg-password" className="text-sm text-slate-300 font-medium">
-              {t.auth.password}
-            </label>
-            <div className="relative">
-              <input
-                id="reg-password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="••••••••"
-                className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 pr-10 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition"
-              >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
+            <button
+              type="submit"
+              disabled={loading || phone.length < 9}
+              className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 disabled:opacity-50 text-white font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30"
+            >
+              {loading ? <Loader2 size={16} className="animate-spin" /> : <UserPlus size={16} />}
+              {loading ? t.auth.sending : t.auth.send_otp}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleVerifyOtp} className="space-y-4">
+            <div className="space-y-1.5">
+              <label htmlFor="otp" className="text-sm text-slate-300 font-medium">
+                {t.auth.otp}
+              </label>
+              <div className="relative">
+                <input
+                  id="otp"
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  required
+                  placeholder="123456"
+                  maxLength={6}
+                  className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-10 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition text-center tracking-[0.5em] font-mono text-lg"
+                />
+                <KeyRound size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              </div>
+              <p className="text-xs text-slate-500 text-center mt-2">
+                Namba ya siri imetumwa kwenda: <br/><span className="text-slate-300 font-medium">{phone}</span>
+              </p>
             </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            id="register-submit"
-            className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 disabled:opacity-50 text-white font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20"
-          >
-            {loading ? (
-              <Loader2 size={16} className="animate-spin" />
-            ) : (
-              <UserPlus size={16} />
-            )}
-            {loading ? t.auth.registering : t.auth.register_btn}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={loading || otp.length !== 6}
+              className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 disabled:opacity-50 text-white font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30"
+            >
+              {loading ? <Loader2 size={16} className="animate-spin" /> : <UserPlus size={16} />}
+              {loading ? t.auth.verifying : t.auth.verify_otp}
+            </button>
+            
+            <button
+              type="button"
+              onClick={() => {
+                setStep(1)
+                setOtp('')
+                setError(null)
+              }}
+              className="w-full text-sm text-slate-400 hover:text-white transition"
+            >
+              {t.common.back}
+            </button>
+          </form>
+        )}
 
         <p className="text-center text-sm text-slate-400 mt-6">
           {t.auth.has_account}{' '}
