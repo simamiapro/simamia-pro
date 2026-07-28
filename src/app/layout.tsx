@@ -20,12 +20,12 @@ export const metadata: Metadata = {
 import { LanguageProvider } from '@/lib/i18n/language-context'
 import { getLocale } from '@/lib/i18n/server'
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const locale = getLocale()
+  const locale = await getLocale()
   
   return (
     <html lang={locale} className={`${geist.variable} dark`}>

@@ -144,6 +144,34 @@ export const dictionaries = {
         medium: '100 Credits (Miezi 2 Premium)',
         large: '500 Credits (Mwaka 1 Premium)'
       }
+    },
+    // Landing Page
+    landing: {
+      hero_badge: 'Jukwaa #1 la Usimamizi wa Mali Tanzania',
+      hero_title_1: 'Simamia Mali Yako',
+      hero_title_2: 'Kwa Akili na Urahisi',
+      hero_desc: 'Jukwaa la kisasa kwa wamiliki wa nyumba Tanzania — simamia nyumba, wapangaji, na ukusanyaji wa kodi yote katika sehemu moja salama na rahisi.',
+      cta_start: 'Anza Sasa — Bila Malipo',
+      cta_login: 'Tayari Una Akaunti? Ingia',
+      features_title: 'Kila Kitu Unachohitaji',
+      features_desc: 'Zana za kisasa zilizoundwa mahususi kwa wamiliki wa nyumba Tanzania.',
+      feat_properties_title: 'Usimamizi wa Mali',
+      feat_properties_desc: 'Ongeza na usimamie nyumba, ghorofa, na fremu zako zote katika sehemu moja.',
+      feat_tenants_title: 'Dhibiti Wapangaji',
+      feat_tenants_desc: 'Fuatilia wapangaji, mikataba, tarehe za kulipa kodi, na mawasiliano yao.',
+      feat_sms_title: 'SMS za Otomatiki',
+      feat_sms_desc: 'Tuma mawaidha ya kodi kiotomatiki kupitia SMS kwa wapangaji wako wote.',
+      feat_mpesa_title: 'Malipo ya M-Pesa',
+      feat_mpesa_desc: 'Pokea malipo ya kodi kupitia M-Pesa na ufuatilie kiotomatiki.',
+      social_proof: 'Wamiliki zaidi ya 500 tayari wanatumia Simamia Pro kusimamia mali zao.',
+      footer_tagline: 'Usimamizi wa mali wenye akili kwa wamiliki wa nyumba Tanzania.',
+      footer_product: 'Bidhaa',
+      footer_support: 'Msaada',
+      footer_legal: 'Kisheria',
+      footer_contact: 'Wasiliana Nasi',
+      footer_privacy: 'Sera ya Faragha',
+      footer_terms: 'Masharti ya Matumizi',
+      footer_rights: 'Haki zote zimehifadhiwa.',
     }
   },
   en: {
@@ -289,6 +317,34 @@ export const dictionaries = {
         medium: '100 Credits (2 Months Premium)',
         large: '500 Credits (1 Year Premium)'
       }
+    },
+    // Landing Page
+    landing: {
+      hero_badge: '#1 Property Management Platform in Tanzania',
+      hero_title_1: 'Manage Your Properties',
+      hero_title_2: 'Smartly & Effortlessly',
+      hero_desc: 'A modern platform for Tanzanian landlords — manage properties, tenants, and rent collection all in one secure and easy place.',
+      cta_start: 'Get Started — It\'s Free',
+      cta_login: 'Already Have an Account? Sign In',
+      features_title: 'Everything You Need',
+      features_desc: 'Modern tools built specifically for Tanzanian landlords.',
+      feat_properties_title: 'Property Management',
+      feat_properties_desc: 'Add and manage all your houses, apartments, and commercial frames in one place.',
+      feat_tenants_title: 'Tenant Tracking',
+      feat_tenants_desc: 'Track tenants, leases, rent due dates, and their contact information.',
+      feat_sms_title: 'Automated SMS',
+      feat_sms_desc: 'Send automatic rent reminders via SMS to all your tenants.',
+      feat_mpesa_title: 'M-Pesa Payments',
+      feat_mpesa_desc: 'Receive rent payments via M-Pesa and track them automatically.',
+      social_proof: 'Over 500 landlords are already using Simamia Pro to manage their properties.',
+      footer_tagline: 'Smart property management for Tanzanian landlords.',
+      footer_product: 'Product',
+      footer_support: 'Support',
+      footer_legal: 'Legal',
+      footer_contact: 'Contact Us',
+      footer_privacy: 'Privacy Policy',
+      footer_terms: 'Terms of Service',
+      footer_rights: 'All rights reserved.',
     }
   }
 }

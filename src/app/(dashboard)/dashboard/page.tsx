@@ -41,6 +41,10 @@ export default async function DashboardPage() {
     tenants: tenants?.length ?? 0
   }
 
+  const occupiedUnits = metrics.occupiedUnits
+  const vacantUnits = metrics.units - occupiedUnits
+  const occupancyRate = metrics.units > 0 ? Math.round((occupiedUnits / metrics.units) * 100) : 0
+
   const isPremium = (landlord as Landlord)?.account_tier === 'premium'
 
   const rentDues = (tenants ?? [])
