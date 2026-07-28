@@ -66,7 +66,7 @@ export function UnitForm({ propertyId, unit, onClose, tierLocked, totalUnits }: 
         .from('unit-photos')
         .upload(path, photoFile, { upsert: true })
       if (uploadErr) {
-        setError('Picha haikupakia: ' + uploadErr.message)
+        setError(t.units.form.photo_error + ' ' + uploadErr.message)
         setLoading(false)
         return
       }
@@ -111,15 +111,15 @@ export function UnitForm({ propertyId, unit, onClose, tierLocked, totalUnits }: 
             <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Lock size={28} className="text-amber-400" />
             </div>
-            <h3 className="text-white font-semibold mb-2">Kikomo Kimefikiwa</h3>
+            <h3 className="text-white font-semibold mb-2">{t.units.form.limit_reached}</h3>
             <p className="text-slate-400 text-sm mb-6">
-              Free Version inaruhusu vyumba 5 tu. Panda daraja la Premium kupata nafasi zaidi.
+              {t.units.form.limit_desc}
             </p>
             <button
               onClick={onClose}
               className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm transition"
             >
-              Panda Premium →
+              {t.units.form.upgrade_btn}
             </button>
           </div>
         ) : (
@@ -145,7 +145,7 @@ export function UnitForm({ propertyId, unit, onClose, tierLocked, totalUnits }: 
               ) : (
                 <div className="text-center">
                   <ImagePlus size={20} className="text-slate-500 mx-auto mb-1" />
-                  <p className="text-slate-500 text-xs">Bonyeza kupakia picha</p>
+                  <p className="text-slate-500 text-xs">{t.units.form.upload_photo}</p>
                 </div>
               )}
               <input ref={fileRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
@@ -165,13 +165,13 @@ export function UnitForm({ propertyId, unit, onClose, tierLocked, totalUnits }: 
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm text-slate-300 font-medium">Jina la Chumba / Kitengo</label>
+              <label className="text-sm text-slate-300 font-medium">{t.units.form.custom_name}</label>
               <input
                 type="text"
                 value={customName}
                 onChange={(e) => setCustomName(e.target.value)}
                 required
-                placeholder="mfano: Frame A1, Chumba 3B"
+                placeholder={t.units.form.custom_name_placeholder}
                 className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
               />
             </div>
@@ -190,7 +190,7 @@ export function UnitForm({ propertyId, unit, onClose, tierLocked, totalUnits }: 
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm text-slate-300 font-medium">Hali ya Chumba</label>
+              <label className="text-sm text-slate-300 font-medium">{t.units.form.status}</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as 'vacant' | 'occupied')}

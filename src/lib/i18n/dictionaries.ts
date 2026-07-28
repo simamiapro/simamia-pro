@@ -48,7 +48,7 @@ export const dictionaries = {
     dashboard: {
       welcome: 'Karibu,',
       metrics: {
-        total_properties: 'Jumla ya Mali',
+        total_properties: 'Jumla ya Miradi',
         total_units: 'Vyumba / Nyumba',
         occupied_units: 'Zilizopangishwa',
         total_tenants: 'Wapangaji',
@@ -85,6 +85,14 @@ export const dictionaries = {
       monthly_rent: 'Kodi kwa Mwezi',
       form: {
         type: 'Aina ya Kitengo',
+        custom_name: 'Jina la Chumba / Kitengo',
+        custom_name_placeholder: 'mfano: Frame A1, Chumba 3B',
+        status: 'Hali ya Chumba',
+        upload_photo: 'Bonyeza kupakia picha',
+        limit_reached: 'Kikomo Kimefikiwa',
+        limit_desc: 'Free Version inaruhusu vyumba 5 tu. Panda daraja la Premium kupata nafasi zaidi.',
+        upgrade_btn: 'Panda Premium →',
+        photo_error: 'Picha haikupakia:',
         types: {
           apartment: 'Ghorofa / Apartment',
           house: 'Nyumba Nzima',
@@ -232,7 +240,7 @@ export const dictionaries = {
     dashboard: {
       welcome: 'Welcome,',
       metrics: {
-        total_properties: 'Total Properties',
+        total_properties: 'Total Projects',
         total_units: 'Total Units',
         occupied_units: 'Occupied Units',
         total_tenants: 'Total Tenants',
@@ -269,6 +277,14 @@ export const dictionaries = {
       monthly_rent: 'Monthly Rent',
       form: {
         type: 'Unit Type',
+        custom_name: 'Unit Name / Number',
+        custom_name_placeholder: 'e.g., Shop A1, Room 3B',
+        status: 'Unit Status',
+        upload_photo: 'Click to upload photo',
+        limit_reached: 'Limit Reached',
+        limit_desc: 'Free Version allows only 5 units. Upgrade to Premium for unlimited space.',
+        upgrade_btn: 'Upgrade to Premium →',
+        photo_error: 'Photo failed to upload:',
         types: {
           apartment: 'Apartment',
           house: 'Standalone House',

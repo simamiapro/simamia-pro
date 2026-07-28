@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { UnitForm } from '@/components/shared/unit-form'
 import { formatTZS, ordinal } from '@/lib/utils'
 import type { Landlord, Property, Unit, Tenant } from '@/types/database'
+import { useLanguage } from '@/lib/i18n/language-context'
 
 interface UnitWithTenant extends Unit {
   tenants: Tenant[]
@@ -23,16 +24,11 @@ interface PropertyDetailClientProps {
   totalUnits: number
 }
 
-const PROPERTY_TYPE_LABELS: Record<string, string> = {
-  apartment: 'Ghorofa (Apartment)',
-  house: 'Nyumba ya Kawaida',
-  commercial: 'Fremu ya Biashara',
-  bedsitter: 'Bedsitter',
-  plot: 'Kipande cha Ardhi',
-}
+
 
 export function PropertyDetailClient({ property, landlord, totalUnits }: PropertyDetailClientProps) {
   const router = useRouter()
+  const { t } = useLanguage()
   const [showUnitForm, setShowUnitForm] = useState(false)
   const [editUnit, setEditUnit] = useState<Unit | undefined>()
 
@@ -56,7 +52,7 @@ export function PropertyDetailClient({ property, landlord, totalUnits }: Propert
         </Link>
         <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-bold text-white">
-            {PROPERTY_TYPE_LABELS[property.property_type] ?? property.property_type}
+            {property.name || 'Mradi Usio na Jina'}
           </h1>
           <p className="text-slate-400 text-sm mt-0.5">{property.location}</p>
         </div>
@@ -72,9 +68,9 @@ export function PropertyDetailClient({ property, landlord, totalUnits }: Propert
       {/* Summary stats */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: 'Jumla Vyumba', value: property.units.length, color: 'text-blue-400' },
-          { label: 'Imekaliwa', value: occupiedCount, color: 'text-emerald-400' },
-          { label: 'Kodi/Mwezi', value: formatTZS(property.units.filter(u => u.status === 'occupied').reduce((s, u) => s + u.monthly_rent, 0)), color: 'text-amber-400' },
+          { label: t.dashboard.metrics.total_units, value: property.units.length, color: 'text-blue-400' },
+          { label: t.units.status.occupied, value: occupiedCount, color: 'text-emerald-400' },
+          { label: t.units.monthly_rent, value: formatTZS(property.units.filter(u => u.status === 'occupied').reduce((s, u) => s + u.monthly_rent, 0)), color: 'text-amber-400' },
         ].map((s) => (
           <div key={s.label} className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 text-center">
             <p className={`text-xl font-bold ${s.color}`}>{s.value}</p>
@@ -117,7 +113,7 @@ export function PropertyDetailClient({ property, landlord, totalUnits }: Propert
                       ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
                       : 'bg-slate-700/80 text-slate-300 border-slate-600/50'
                   }`}>
-                    {unit.status === 'occupied' ? 'Imekaliwa' : 'Wazi'}
+                    {unit.status === 'occupied' ? t.units.status.occupied : t.units.status.vacant}
                   </div>
                 </div>
 
@@ -127,14 +123,7 @@ export function PropertyDetailClient({ property, landlord, totalUnits }: Propert
                     <div>
                       <p className="text-white font-semibold">{unit.custom_name}</p>
                       <p className="text-slate-400 text-xs mt-0.5 mb-1">
-                        {
-                          unit.unit_type === 'swahili_room' ? 'Chumba Uswahilini' :
-                          unit.unit_type === 'hostel_room' ? 'Chumba cha Hostel' :
-                          unit.unit_type === 'commercial' ? 'Fremu ya Biashara' :
-                          unit.unit_type === 'house' ? 'Nyumba Nzima' :
-                          unit.unit_type === 'bedsitter' ? 'Bedsitter / Studio' :
-                          'Ghorofa / Apartment'
-                        }
+                        {t.units.form.types[unit.unit_type as keyof typeof t.units.form.types] || t.units.form.types.apartment}
                       </p>
                       <p className="text-emerald-400 text-sm font-medium">{formatTZS(unit.monthly_rent)}/mwezi</p>
                     </div>
