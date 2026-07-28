@@ -4,7 +4,7 @@
  */
 
 const BEEM_BASE_URL = 'https://apisms.beem.africa/v1/send'
-const BEEM_SENDER_ID = process.env.BEEM_SENDER_ID || 'INFO'
+const BEEM_SENDER_ID = process.env.BEEM_SENDER_ID || 'JiGlo'
 
 function getAuthToken(): string {
   const apiKey = process.env.BEEM_API_KEY

@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     // Send SMS via Beem
     const apiKey = process.env.BEEM_API_KEY
     const apiSecret = process.env.BEEM_API_SECRET
-    const senderId = process.env.BEEM_SENDER_ID || 'INFO'
+    const senderId = process.env.BEEM_SENDER_ID || 'JiGlo'
 
     if (!apiKey || !apiSecret) {
       console.error('Beem credentials not configured')
