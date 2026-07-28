@@ -46,6 +46,8 @@ export interface Tenant {
   move_in_date: string | null
   lease_end_date: string | null
   rent_due_day: number
+  contract_start_date?: string | null
+  past_debt_amount?: number
   created_at: string
   updated_at: string
 }

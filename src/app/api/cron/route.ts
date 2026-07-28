@@ -151,7 +151,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Bulk update landlords' credits
-    for (const [id, l] of Object.entries(landlordMap)) {
+    for (const [id, l] of Object.entries(landlordMap) as [string, any][]) {
       const original = landlords.find(orig => orig.id === id)
       if (original && original.sms_credits !== l.sms_credits) {
         await supabase
