@@ -167,8 +167,8 @@ export const dictionaries = {
     // Landing Page
     landing: {
       hero_badge: 'Jukwaa #1 la Usimamizi wa Mali Tanzania',
-      hero_title_1: 'Simamia Mali Yako',
-      hero_title_2: 'Kwa Akili na Urahisi',
+      hero_title_1: 'Simamia Nyumba zako za kupangisha',
+      hero_title_2: 'kwa Ufanisi Kidigitali',
       hero_desc: 'Jukwaa la kisasa kwa wamiliki wa nyumba Tanzania — simamia nyumba, wapangaji, na ukusanyaji wa kodi yote katika sehemu moja salama na rahisi.',
       cta_start: 'Anza Sasa — Bila Malipo',
       cta_login: 'Tayari Una Akaunti? Ingia',

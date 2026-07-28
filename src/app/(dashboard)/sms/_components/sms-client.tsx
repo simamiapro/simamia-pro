@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { MessageSquare, Send, Lock, AlertCircle, CheckCircle2, Loader2, Users, Building2 } from 'lucide-react'
+import { MessageSquare, Send, Lock, AlertCircle, CheckCircle2, Loader2, Users, Building2, CheckCheck } from 'lucide-react'
 import { calculateSmsCost, formatTZS } from '@/lib/utils'
 import Link from 'next/link'
 import type { Landlord } from '@/types/database'
@@ -92,15 +92,26 @@ export function SmsClient({ landlord, tenants }: SmsClientProps) {
           <div className="w-20 h-20 bg-amber-500/10 border border-amber-500/20 rounded-3xl flex items-center justify-center mx-auto mb-5">
             <Lock size={36} className="text-amber-400" />
           </div>
-          <h3 className="text-white text-xl font-bold mb-3">Kipengele cha Premium</h3>
-          <p className="text-slate-400 text-sm max-w-md mx-auto mb-8 leading-relaxed">
-            Kutuma SMS kwa wapangaji ni kipengele cha akaunti ya Premium tu. Panda daraja ili uweze kutuma ujumbe wa kodi, matangazo, na ukumbusho.
+          <h3 className="text-white text-2xl font-bold mb-3">Panda Daraja la Premium</h3>
+          <p className="text-slate-400 max-w-md mx-auto mb-8 leading-relaxed">
+            Kutuma SMS kwa wapangaji ni kipengele cha akaunti ya Premium tu. Kwa TZS 5,000 tu kwa mwezi utapata:
           </p>
+          <ul className="text-left max-w-md mx-auto space-y-4 mb-8">
+            <li className="flex items-center gap-3 text-slate-300">
+              <CheckCheck size={18} className="text-emerald-400" /> Vyumba na Miradi <b>Bila Kikomo</b>
+            </li>
+            <li className="flex items-center gap-3 text-slate-300">
+              <CheckCheck size={18} className="text-emerald-400" /> Kutuma SMS (Ujumbe wa kodi, matangazo, n.k.)
+            </li>
+            <li className="flex items-center gap-3 text-slate-300">
+              <CheckCheck size={18} className="text-emerald-400" /> Support ya haraka ya WhatsApp na Simu
+            </li>
+          </ul>
           <Link
             href="/topup"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white px-8 py-3 rounded-xl font-semibold transition shadow-lg shadow-amber-500/20"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white px-8 py-3 rounded-xl font-bold transition shadow-lg shadow-amber-500/20"
           >
-            Panda Premium →
+            Angalia Vifurushi vya Premium →
           </Link>
         </div>
       </div>

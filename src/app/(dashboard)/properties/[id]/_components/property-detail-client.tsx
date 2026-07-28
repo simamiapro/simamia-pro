@@ -61,7 +61,7 @@ export function PropertyDetailClient({ property, landlord, totalUnits }: Propert
           className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl font-medium text-sm transition shadow-lg shadow-emerald-500/20 shrink-0"
         >
           <Plus size={16} />
-          <span className="hidden sm:inline">Ongeza Chumba</span>
+          <span className="hidden sm:inline">Ongeza Unit</span>
         </button>
       </div>
 
@@ -89,7 +89,7 @@ export function PropertyDetailClient({ property, landlord, totalUnits }: Propert
             onClick={() => { setEditUnit(undefined); setShowUnitForm(true) }}
             className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-medium text-sm transition"
           >
-            Ongeza Chumba
+            Ongeza Unit
           </button>
         </div>
       ) : (
@@ -103,8 +103,12 @@ export function PropertyDetailClient({ property, landlord, totalUnits }: Propert
                   {unit.unit_photo_url ? (
                     <img src={unit.unit_photo_url} alt={unit.custom_name} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-600">
-                      <ImageOff size={28} />
+                    <div
+                      onClick={() => { setEditUnit(unit); setShowUnitForm(true) }}
+                      className="w-full h-full flex flex-col items-center justify-center text-slate-600 cursor-pointer hover:bg-slate-700/30 transition group"
+                    >
+                      <ImageOff size={28} className="mb-2 group-hover:scale-110 transition-transform" />
+                      <span className="text-xs text-slate-500 group-hover:text-slate-400">Weka Picha</span>
                     </div>
                   )}
                   {/* Status badge */}

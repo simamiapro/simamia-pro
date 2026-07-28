@@ -66,10 +66,10 @@ export function TopUpClient({ landlord }: TopUpClientProps) {
       </div>
 
       {/* Purchase Options */}
-      <div className="grid sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
         <button
           onClick={() => setPurchaseType('premium')}
-          className={`text-left p-5 rounded-2xl border transition-all ${
+          className={`text-left p-4 sm:p-5 rounded-2xl border transition-all ${
             purchaseType === 'premium'
               ? 'bg-amber-900/20 border-amber-500/50 ring-1 ring-amber-500/50'
               : 'bg-slate-900/40 border-slate-800 hover:border-slate-700'
@@ -83,17 +83,20 @@ export function TopUpClient({ landlord }: TopUpClientProps) {
               {purchaseType === 'premium' && <div className="w-2 h-2 rounded-full bg-amber-400" />}
             </div>
           </div>
-          <h3 className={`font-bold text-lg ${purchaseType === 'premium' ? 'text-amber-400' : 'text-slate-300'}`}>
+          <h3 className={`font-bold text-base sm:text-lg ${purchaseType === 'premium' ? 'text-amber-400' : 'text-slate-300'}`}>
             Kifurushi cha Premium
           </h3>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="hidden sm:block text-slate-400 text-sm mt-1">
             TZS {PREMIUM_PRICE.toLocaleString()} / mwezi. Vyumba bila kikomo, na kutumia SMS za otomatiki.
+          </p>
+          <p className="sm:hidden text-slate-400 text-xs mt-1">
+            TZS {PREMIUM_PRICE.toLocaleString()} / mwezi
           </p>
         </button>
 
         <button
           onClick={() => setPurchaseType('sms')}
-          className={`text-left p-5 rounded-2xl border transition-all ${
+          className={`text-left p-4 sm:p-5 rounded-2xl border transition-all ${
             purchaseType === 'sms'
               ? 'bg-emerald-900/20 border-emerald-500/50 ring-1 ring-emerald-500/50'
               : 'bg-slate-900/40 border-slate-800 hover:border-slate-700'
@@ -107,11 +110,14 @@ export function TopUpClient({ landlord }: TopUpClientProps) {
               {purchaseType === 'sms' && <div className="w-2 h-2 rounded-full bg-emerald-400" />}
             </div>
           </div>
-          <h3 className={`font-bold text-lg ${purchaseType === 'sms' ? 'text-emerald-400' : 'text-slate-300'}`}>
+          <h3 className={`font-bold text-base sm:text-lg ${purchaseType === 'sms' ? 'text-emerald-400' : 'text-slate-300'}`}>
             Salio la SMS
           </h3>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="hidden sm:block text-slate-400 text-sm mt-1">
             TZS {CREDIT_PRICE} per SMS. Tuma mawaidha na matangazo kwa wapangaji wako.
+          </p>
+          <p className="sm:hidden text-slate-400 text-xs mt-1">
+            TZS {CREDIT_PRICE} per SMS
           </p>
         </button>
       </div>

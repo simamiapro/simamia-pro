@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Building2, Users, MessageSquare, Smartphone, ArrowRight, Sparkles, Shield, ChevronRight } from 'lucide-react'
+import { Building2, Users, MessageSquare, Smartphone, ArrowRight, Sparkles, Shield, ChevronRight, CheckCheck } from 'lucide-react'
 import { useLanguage } from '@/lib/i18n/language-context'
 import { LanguageSwitcher } from '@/components/shared/language-switcher'
 
@@ -256,6 +256,103 @@ export default function LandingPage() {
               <p className="text-slate-400 text-sm leading-relaxed">{feat.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ──────── Pricing Section ──────── */}
+      <section className="relative z-10 max-w-6xl mx-auto px-6 py-24 border-t border-white/[0.06]">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Mipango ya Bei</h2>
+          <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto">
+            Chagua mpango unaokufaa zaidi. Anza na Toleo la Bure, au pata uwezo kamili na Premium.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {/* Free Tier */}
+          <div className="bg-slate-900/60 backdrop-blur-sm border border-slate-800 rounded-3xl p-8 hover:border-slate-700 transition-all">
+            <h3 className="text-xl font-bold text-slate-300 mb-2">Free Version</h3>
+            <div className="flex items-baseline gap-1 mb-6">
+              <span className="text-4xl font-bold text-white">TZS 0</span>
+              <span className="text-slate-500">/mwezi</span>
+            </div>
+            <ul className="space-y-4 mb-8">
+              <li className="flex items-center gap-3 text-slate-300">
+                <div className="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
+                  <CheckCheck size={12} className="text-slate-400" />
+                </div>
+                Hadi vyumba 5 pekee
+              </li>
+              <li className="flex items-center gap-3 text-slate-300">
+                <div className="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
+                  <CheckCheck size={12} className="text-slate-400" />
+                </div>
+                Kurekodi kodi na wapangaji
+              </li>
+              <li className="flex items-center gap-3 text-slate-500 line-through">
+                <div className="w-5 h-5 rounded-full bg-slate-900 flex items-center justify-center shrink-0">
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-700" />
+                </div>
+                Ukomo usio na mipaka wa vyumba
+              </li>
+              <li className="flex items-center gap-3 text-slate-500 line-through">
+                <div className="w-5 h-5 rounded-full bg-slate-900 flex items-center justify-center shrink-0">
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-700" />
+                </div>
+                Kutuma SMS (Matangazo & Kodi)
+              </li>
+            </ul>
+            <Link
+              href="/register"
+              className="block w-full py-3 px-4 rounded-xl text-center font-medium bg-slate-800 text-white hover:bg-slate-700 transition-colors"
+            >
+              Anza Bure
+            </Link>
+          </div>
+
+          {/* Premium Tier */}
+          <div className="relative bg-gradient-to-b from-amber-900/20 to-slate-900/60 backdrop-blur-sm border border-amber-500/30 rounded-3xl p-8 shadow-2xl shadow-amber-500/10 transform md:-translate-y-4">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
+              INAPENDEKEZWA ZAIDI
+            </div>
+            <h3 className="text-xl font-bold text-amber-400 mb-2">Premium</h3>
+            <div className="flex items-baseline gap-1 mb-6">
+              <span className="text-4xl font-bold text-white">TZS 5,000</span>
+              <span className="text-slate-500">/mwezi</span>
+            </div>
+            <ul className="space-y-4 mb-8">
+              <li className="flex items-center gap-3 text-white">
+                <div className="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                  <CheckCheck size={12} className="text-amber-400" />
+                </div>
+                Vyumba na Miradi <b>Bila Kikomo</b>
+              </li>
+              <li className="flex items-center gap-3 text-white">
+                <div className="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                  <CheckCheck size={12} className="text-amber-400" />
+                </div>
+                Kurekodi kodi na wapangaji
+              </li>
+              <li className="flex items-center gap-3 text-white">
+                <div className="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                  <CheckCheck size={12} className="text-amber-400" />
+                </div>
+                Kutuma SMS kwa wapangaji
+              </li>
+              <li className="flex items-center gap-3 text-white">
+                <div className="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                  <CheckCheck size={12} className="text-amber-400" />
+                </div>
+                Support ya haraka (WhatsApp/Simu)
+              </li>
+            </ul>
+            <Link
+              href="/register"
+              className="block w-full py-3 px-4 rounded-xl text-center font-bold bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-400 hover:to-amber-500 transition-colors shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40"
+            >
+              Panda Daraja la Premium
+            </Link>
+          </div>
         </div>
       </section>
 
