@@ -8,7 +8,7 @@ const BEEM_SENDER_ID = 'SIMAMIA'
 
 function getAuthToken(): string {
   const apiKey = process.env.BEEM_API_KEY
-  const secretKey = process.env.BEEM_SECRET_KEY
+  const secretKey = process.env.BEEM_API_SECRET || process.env.BEEM_SECRET_KEY
   if (!apiKey || !secretKey) {
     throw new Error('Beem API credentials not configured')
   }
