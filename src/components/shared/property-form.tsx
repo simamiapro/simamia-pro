@@ -1,0 +1,119 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import { Loader2, X } from 'lucide-react'
+import type { Property } from '@/types/database'
+
+interface PropertyFormProps {
+  property?: Property
+  onClose: () => void
+}
+
+const PROPERTY_TYPES = [
+  { value: 'apartment', label: 'Ghorofa (Apartment)' },
+  { value: 'house', label: 'Nyumba ya Kawaida' },
+  { value: 'commercial', label: 'Fremu ya Biashara' },
+  { value: 'bedsitter', label: 'Bedsitter' },
+  { value: 'plot', label: 'Kipande cha Ardhi' },
+]
+
+export function PropertyForm({ property, onClose }: PropertyFormProps) {
+  const router = useRouter()
+  const isEditing = !!property
+  const [propertyType, setPropertyType] = useState(property?.property_type ?? 'apartment')
+  const [location, setLocation] = useState(property?.location ?? '')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { setError('Tafadhali ingia tena'); setLoading(false); return }
+
+    if (isEditing) {
+      const { error: err } = await supabase
+        .from('properties')
+        .update({ property_type: propertyType, location })
+        .eq('id', property.id)
+      if (err) { setError(err.message); setLoading(false); return }
+    } else {
+      const { error: err } = await supabase
+        .from('properties')
+        .insert({ landlord_id: user.id, property_type: propertyType, location })
+      if (err) { setError(err.message); setLoading(false); return }
+    }
+
+    router.refresh()
+    onClose()
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="bg-slate-900 border border-slate-700/50 rounded-2xl w-full max-w-md shadow-2xl">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+          <h2 className="text-white font-semibold">{isEditing ? 'Hariri Mali' : 'Ongeza Mali Mpya'}</h2>
+          <button onClick={onClose} className="text-slate-400 hover:text-white transition">
+            <X size={18} />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm">
+              {error}
+            </div>
+          )}
+
+          <div className="space-y-1.5">
+            <label className="text-sm text-slate-300 font-medium">Aina ya Mali</label>
+            <select
+              value={propertyType}
+              onChange={(e) => setPropertyType(e.target.value)}
+              className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
+            >
+              {PROPERTY_TYPES.map((t) => (
+                <option key={t.value} value={t.value}>{t.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-sm text-slate-300 font-medium">Mahali (Eneo)</label>
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              required
+              placeholder="mfano: Kinondoni, Dar es Salaam"
+              className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
+            />
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white hover:border-slate-600 text-sm transition"
+            >
+              Ghairi
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-medium text-sm flex items-center justify-center gap-2 transition"
+            >
+              {loading && <Loader2 size={14} className="animate-spin" />}
+              {isEditing ? 'Hifadhi' : 'Ongeza'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
