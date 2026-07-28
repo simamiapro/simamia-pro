@@ -40,7 +40,7 @@ export function PropertyForm({ property, onClose }: PropertyFormProps) {
     } else {
       const { error: err } = await supabase
         .from('properties')
-        .insert({ landlord_id: user.id, name, property_type: 'mixed', location })
+        .insert({ landlord_id: user.id, name, property_type: 'apartment', location })
       if (err) { setError(err.message); setLoading(false); return }
     }
 
