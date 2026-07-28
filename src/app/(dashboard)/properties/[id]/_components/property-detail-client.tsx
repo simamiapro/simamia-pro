@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { ArrowLeft, Plus, Home, Users, Pencil, Trash2, ImageOff, TrendingUp } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { UnitForm } from '@/components/shared/unit-form'
-import { formatTZS, ordinal } from '@/lib/utils'
+import { formatTZS, formatDate } from '@/lib/utils'
 import type { Landlord, Property, Unit, Tenant } from '@/types/database'
 import { useLanguage } from '@/lib/i18n/language-context'
 
@@ -154,9 +154,12 @@ export function PropertyDetailClient({ property, landlord, totalUnits }: Propert
                         <Users size={13} className="text-slate-400" />
                         <p className="text-slate-200 text-sm font-medium truncate">{tenant.name}</p>
                       </div>
-                      <p className="text-slate-400 text-xs mt-1 pl-5">
-                        Kodi siku ya {ordinal(tenant.rent_due_day)} kila mwezi
-                      </p>
+                      <div className="mt-3 bg-slate-900/50 p-3 rounded-lg border border-slate-700/50">
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-slate-400">Tarehe ya Mwisho</span>
+                          <span className="text-white font-medium">{tenant.lease_end_date ? formatDate(tenant.lease_end_date) : 'Haijawekwa'}</span>
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <div className="bg-slate-800/30 rounded-lg px-3 py-2 text-center">

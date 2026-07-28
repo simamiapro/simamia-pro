@@ -35,27 +35,25 @@ export function ordinal(n: number): string {
 }
 
 /**
- * Calculate days until a given day-of-month rent due date.
- * Returns negative for overdue, 0 for today, positive for future.
+ * Calculate days until a given date string (e.g. YYYY-MM-DD).
+ * Returns negative for past, 0 for today, positive for future.
  */
-export function daysUntilRentDue(rentDueDay: number): number {
+export function daysUntilDate(dateStr: string | null | undefined): number {
+  if (!dateStr) return 9999
   const today = new Date()
-  const currentMonth = today.getMonth()
-  const currentYear = today.getFullYear()
-
-  let dueDate = new Date(currentYear, currentMonth, rentDueDay)
-  if (dueDate <= today) {
-    dueDate = new Date(currentYear, currentMonth + 1, rentDueDay)
-  }
+  today.setHours(0, 0, 0, 0)
+  
+  const targetDate = new Date(dateStr)
+  targetDate.setHours(0, 0, 0, 0)
 
   const msPerDay = 1000 * 60 * 60 * 24
-  return Math.round((dueDate.getTime() - today.getTime()) / msPerDay)
+  return Math.round((targetDate.getTime() - today.getTime()) / msPerDay)
 }
 
 /**
- * Get the rent status color class based on days until due
+ * Get the contract status color class based on days until due
  */
-export function getRentStatusColor(
+export function getContractStatusColor(
   daysUntil: number,
   t: { due_soon: string; days: string; today: string; overdue: string }
 ): {

@@ -115,13 +115,13 @@ export const dictionaries = {
         name: 'Jina',
         phone: 'Namba ya Simu',
         property: 'Mali & Chumba',
-        rent_due: 'Siku ya Kulipa',
+        lease_end: 'Mkataba Mwisho',
         actions: 'Vitendo'
       },
       form: {
         name: 'Jina Kamili',
         phone: 'Namba ya Simu',
-        rent_due_day: 'Tarehe ya Kulipa (1-31)',
+
         move_in_date: 'Tarehe ya Kuingia',
         lease_end: 'Tarehe ya Kumaliza Mkataba (Hiari)',
         contract_start: 'Tarehe Kuanza Mkataba',
@@ -311,13 +311,13 @@ export const dictionaries = {
         name: 'Name',
         phone: 'Phone Number',
         property: 'Property & Unit',
-        rent_due: 'Rent Due Day',
+        lease_end: 'Contract End',
         actions: 'Actions'
       },
       form: {
         name: 'Full Name',
         phone: 'Phone Number',
-        rent_due_day: 'Rent Due Date (1-31)',
+
         move_in_date: 'Move-in Date',
         lease_end: 'Lease End Date (Optional)'
       }

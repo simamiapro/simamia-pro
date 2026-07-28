@@ -46,7 +46,6 @@ function TenantForm({
   const [unitId, setUnitId] = useState(tenant?.unit_id ?? '')
   const [moveInDate, setMoveInDate] = useState(tenant?.move_in_date ?? '')
   const [leaseEndDate, setLeaseEndDate] = useState(tenant?.lease_end_date ?? '')
-  const [rentDueDay, setRentDueDay] = useState(tenant?.rent_due_day?.toString() ?? '1')
   const [contractStartDate, setContractStartDate] = useState(tenant?.contract_start_date ?? new Date().toISOString().split('T')[0])
   const [pastDebtAmount, setPastDebtAmount] = useState(tenant?.past_debt_amount?.toString() ?? '0')
   const [loading, setLoading] = useState(false)
@@ -68,7 +67,6 @@ function TenantForm({
       phone,
       move_in_date: moveInDate || null,
       lease_end_date: leaseEndDate || null,
-      rent_due_day: parseInt(rentDueDay, 10) || 1,
       contract_start_date: contractStartDate || null,
       past_debt_amount: parseFloat(pastDebtAmount || '0'),
     }
@@ -124,15 +122,10 @@ function TenantForm({
               <p className="text-xs text-slate-500">Unaweza kuanza na 0, 255 au +255</p>
             </div>
 
-            <div className="col-span-2 grid grid-cols-2 gap-3">
+            <div className="col-span-2">
               <div className="space-y-1.5">
                 <label className="text-sm text-slate-300 font-medium">Tarehe ya Kuingia</label>
                 <input type="date" value={moveInDate} onChange={(e) => setMoveInDate(e.target.value)}
-                  className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition" />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-sm text-slate-300 font-medium">Siku ya Kulipa Kodi (1-31)</label>
-                <input type="number" value={rentDueDay} onChange={(e) => setRentDueDay(e.target.value)} min={1} max={31}
                   className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition" />
               </div>
             </div>
@@ -316,7 +309,7 @@ export function TenantsClient({ tenants, vacantUnits, landlord }: TenantsClientP
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-800">
-                  {['Mpangaji', 'Chumba', 'Kodi/Mwezi', 'Siku ya Kulipa', 'Mkataba Mwisho', ''].map((h) => (
+                  {['Mpangaji', 'Chumba', 'Kodi/Mwezi', 'Mkataba Mwisho', ''].map((h) => (
                     <th key={h} className="text-left text-xs text-slate-400 font-medium px-5 py-3.5 whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -345,9 +338,6 @@ export function TenantsClient({ tenants, vacantUnits, landlord }: TenantsClientP
                     </td>
                     <td className="px-5 py-4 text-emerald-400 text-sm font-medium whitespace-nowrap">
                       {formatTZS(tenant.units?.monthly_rent ?? 0)}
-                    </td>
-                    <td className="px-5 py-4 text-slate-300 text-sm whitespace-nowrap">
-                      {ordinal(tenant.rent_due_day)} kila mwezi
                     </td>
                     <td className="px-5 py-4 text-slate-400 text-sm whitespace-nowrap">
                       {formatDate(tenant.lease_end_date)}

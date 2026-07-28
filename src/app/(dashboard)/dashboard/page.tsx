@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Building2, Users, Home, MessageSquare, TrendingUp, AlertCircle, Clock, CreditCard, Star, CheckCircle2, CalendarDays } from 'lucide-react'
 import Link from 'next/link'
-import { daysUntilRentDue, formatTZS, getRentStatusColor } from '@/lib/utils'
+import { daysUntilDate, formatTZS, getContractStatusColor } from '@/lib/utils'
 import { getDictionary } from '@/lib/i18n/server'
 import type { Landlord } from '@/types/database'
 
@@ -48,9 +48,10 @@ export default async function DashboardPage() {
   const isPremium = (landlord as Landlord)?.account_tier === 'premium'
 
   const rentDues = (tenants ?? [])
+    .filter(t => !!t.lease_end_date)
     .map((t) => ({
       ...t,
-      daysUntil: daysUntilRentDue(t.rent_due_day),
+      daysUntil: daysUntilDate(t.lease_end_date),
     }))
     .sort((a, b) => a.daysUntil - b.daysUntil)
     .slice(0, 10)
@@ -147,7 +148,7 @@ export default async function DashboardPage() {
           ) : (
             <div className="space-y-2">
               {rentDues.map((tenant) => {
-                const status = getRentStatusColor(tenant.daysUntil, t.dashboard.rent_status)
+                const status = getContractStatusColor(tenant.daysUntil, t.dashboard.rent_status)
                 const tenantAny = tenant as any
                 const unit = tenantAny.units
                 const property = unit?.properties

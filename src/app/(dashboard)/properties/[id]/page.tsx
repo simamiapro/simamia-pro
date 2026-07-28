@@ -23,7 +23,7 @@ export default async function PropertyDetailPage({
         *,
         units (
           *,
-          tenants ( id, name, phone, rent_due_day, move_in_date, lease_end_date )
+          tenants ( id, name, phone, move_in_date, lease_end_date )
         )
       `)
       .eq('id', id)
