@@ -68,8 +68,9 @@ export function PropertiesClient({ properties, landlord }: PropertiesClientProps
       {/* Property cards grid */}
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
         {properties.map((property) => {
-          const occupiedCount = property.units.filter((u) => u.status === 'occupied').length
-          const totalRent = property.units
+          const units = property.units || []
+          const occupiedCount = units.filter((u) => u.status === 'occupied').length
+          const totalRent = units
             .filter((u) => u.status === 'occupied')
             .reduce((sum, u) => sum + (u.monthly_rent || 0), 0)
 

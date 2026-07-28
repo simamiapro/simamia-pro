@@ -10,14 +10,18 @@ export default async function PropertiesPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: landlord }, { data: properties }] = await Promise.all([
+  const [{ data: landlord }, { data: properties, error: propsError }] = await Promise.all([
     supabase.from('landlords').select('*').eq('id', user.id).single(),
     supabase
       .from('properties')
-      .select('*, units(id, custom_name, monthly_rent, status, unit_photo_url)')
+      .select('*, units(id, custom_name, unit_type, monthly_rent, status, unit_photo_url)')
       .eq('landlord_id', user.id)
       .order('created_at', { ascending: false }),
   ])
+
+  if (propsError) {
+    console.error('Properties Fetch Error:', propsError)
+  }
 
   return (
     <PropertiesClient

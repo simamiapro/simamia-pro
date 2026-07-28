@@ -145,7 +145,7 @@ export function AdminClient({ landlords }: AdminClientProps) {
                               ? <Loader2 size={10} className="animate-spin" />
                               : <RefreshCw size={10} />
                             }
-                            {landlord.account_tier === 'premium' ? 'Punguza → Toleo la Bure' : 'Panda → Premium'}
+                            {landlord.account_tier === 'premium' ? 'Punguza → Free Version' : 'Panda → Premium'}
                           </button>
                           {message[`tier-${landlord.id}`] && (
                             <p className={`text-xs mt-1 ${message[`tier-${landlord.id}`].startsWith('✓') ? 'text-emerald-400' : 'text-red-400'}`}>

@@ -47,7 +47,7 @@ export function TopUpClient({ landlord }: TopUpClientProps) {
             {landlord.account_tier === 'premium' ? (
               <><Crown size={18} className="text-amber-400" /><span className="text-amber-400 font-bold text-lg">Premium</span></>
             ) : (
-              <span className="text-slate-300 font-bold text-lg">Toleo la Bure</span>
+              <span className="text-slate-300 font-bold text-lg">Free Version</span>
             )}
           </div>
         </div>

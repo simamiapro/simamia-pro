@@ -105,7 +105,7 @@ export function AppSidebar({ landlord }: AppSidebarProps) {
               : 'bg-slate-800/60 border border-slate-700/50 text-slate-400'
           }`}>
             <div className={`w-1.5 h-1.5 rounded-full ${landlord.account_tier === 'premium' ? 'bg-amber-400' : 'bg-slate-500'}`} />
-            <span className="font-medium">{landlord.account_tier === 'premium' ? 'Premium' : 'Toleo la Bure'}</span>
+            <span className="font-medium">{landlord.account_tier === 'premium' ? 'Premium' : 'Free Version'}</span>
             {landlord.account_tier === 'premium' && (
               <span className="ml-auto text-amber-400/70">{landlord.sms_credits} SMS</span>
             )}

@@ -113,7 +113,7 @@ export function UnitForm({ propertyId, unit, onClose, tierLocked, totalUnits }: 
             </div>
             <h3 className="text-white font-semibold mb-2">Kikomo Kimefikiwa</h3>
             <p className="text-slate-400 text-sm mb-6">
-              Toleo la Bure linaruhusu vyumba 5 tu. Panda daraja la Premium kupata nafasi zaidi.
+              Free Version inaruhusu vyumba 5 tu. Panda daraja la Premium kupata nafasi zaidi.
             </p>
             <button
               onClick={onClose}
