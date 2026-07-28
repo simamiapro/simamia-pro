@@ -55,6 +55,8 @@ export default async function DashboardPage() {
     .sort((a, b) => a.daysUntil - b.daysUntil)
     .slice(0, 10)
 
+  const tenantsWithDebt = (tenants ?? []).filter(t => (t.past_debt_amount ?? 0) > 0)
+
   return (
     <div className="max-w-7xl mx-auto">
       <div>
@@ -128,8 +130,8 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-slate-800/20 border border-slate-700/50 rounded-2xl p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <div className="lg:col-span-2 bg-slate-800/20 border border-slate-700/50 rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
               <CalendarDays size={18} />
@@ -228,6 +230,34 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {tenantsWithDebt.length > 0 && (
+        <div className="bg-red-500/5 border border-red-500/20 rounded-2xl p-6 mb-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 rounded-lg bg-red-500/10 text-red-400 flex items-center justify-center">
+              <AlertCircle size={18} />
+            </div>
+            <h2 className="text-lg font-semibold text-white">Wapangaji Wenye Madeni</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {tenantsWithDebt.map(t => {
+              const tAny = t as any
+              return (
+                <div key={t.id} className="bg-slate-900/60 border border-red-500/10 rounded-xl p-4 flex flex-col justify-between">
+                  <div>
+                    <p className="text-white font-medium text-sm">{t.name}</p>
+                    <p className="text-slate-400 text-xs mt-0.5">{tAny.units?.custom_name}</p>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className="text-red-400 font-bold text-sm">{formatTZS(t.past_debt_amount ?? 0)}</span>
+                    <Link href="/tenants" className="text-xs text-slate-300 hover:text-white bg-slate-800 px-2.5 py-1 rounded-md transition">Tazama</Link>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Quick actions */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">

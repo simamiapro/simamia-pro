@@ -47,6 +47,8 @@ function TenantForm({
   const [moveInDate, setMoveInDate] = useState(tenant?.move_in_date ?? '')
   const [leaseEndDate, setLeaseEndDate] = useState(tenant?.lease_end_date ?? '')
   const [rentDueDay, setRentDueDay] = useState(tenant?.rent_due_day?.toString() ?? '1')
+  const [contractStartDate, setContractStartDate] = useState(tenant?.contract_start_date ?? new Date().toISOString().split('T')[0])
+  const [pastDebtAmount, setPastDebtAmount] = useState(tenant?.past_debt_amount?.toString() ?? '0')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -66,7 +68,9 @@ function TenantForm({
       phone,
       move_in_date: moveInDate || null,
       lease_end_date: leaseEndDate || null,
-      rent_due_day: parseInt(rentDueDay, 10),
+      rent_due_day: parseInt(rentDueDay, 10) || 1,
+      contract_start_date: contractStartDate || null,
+      past_debt_amount: parseFloat(pastDebtAmount || '0'),
     }
 
     if (isEditing) {
@@ -115,13 +119,31 @@ function TenantForm({
 
             <div className="col-span-2 space-y-1.5">
               <label className="text-sm text-slate-300 font-medium">Nambari ya Simu</label>
-              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required placeholder="0712 345 678"
+              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required placeholder="Mfano: 0712..., 255..., +255..."
                 className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition" />
+              <p className="text-xs text-slate-500">Unaweza kuanza na 0, 255 au +255</p>
+            </div>
+
+            <div className="col-span-2 grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <label className="text-sm text-slate-300 font-medium">Tarehe ya Kuingia</label>
+                <input type="date" value={moveInDate} onChange={(e) => setMoveInDate(e.target.value)}
+                  className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition" />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-sm text-slate-300 font-medium">Siku ya Kulipa Kodi (1-31)</label>
+                <input type="number" value={rentDueDay} onChange={(e) => setRentDueDay(e.target.value)} min={1} max={31}
+                  className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition" />
+              </div>
+            </div>
+
+            <div className="col-span-2 space-y-1.5 border-t border-slate-800 pt-3 mt-1">
+              <p className="text-sm font-semibold text-emerald-400">Mkataba & Madeni</p>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm text-slate-300 font-medium">Tarehe ya Kuingia</label>
-              <input type="date" value={moveInDate} onChange={(e) => setMoveInDate(e.target.value)}
+              <label className="text-sm text-slate-300 font-medium">Tarehe Kuanza Mkataba</label>
+              <input type="date" value={contractStartDate} onChange={(e) => setContractStartDate(e.target.value)} required
                 className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition" />
             </div>
 
@@ -132,10 +154,12 @@ function TenantForm({
             </div>
 
             <div className="col-span-2 space-y-1.5">
-              <label className="text-sm text-slate-300 font-medium">Siku ya Kulipa Kodi (1-31)</label>
-              <input type="number" value={rentDueDay} onChange={(e) => setRentDueDay(e.target.value)} min={1} max={31}
+              <label className="text-sm text-slate-300 font-medium">Deni la Nyuma (Kama lipo)</label>
+              <input type="number" value={pastDebtAmount} onChange={(e) => setPastDebtAmount(e.target.value)} min={0}
                 className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition" />
             </div>
+
+
           </div>
 
           <div className="flex gap-3 pt-2">
@@ -151,10 +175,91 @@ function TenantForm({
   )
 }
 
+function RenewContractForm({
+  tenant,
+  onClose,
+}: {
+  tenant: TenantWithUnit
+  onClose: () => void
+}) {
+  const router = useRouter()
+  const [contractStartDate, setContractStartDate] = useState(new Date().toISOString().split('T')[0])
+  const [monthsPaid, setMonthsPaid] = useState('3')
+  const [pastDebtAmount, setPastDebtAmount] = useState(tenant.past_debt_amount?.toString() ?? '0')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+    const supabase = createClient()
+    
+    // Calculate new lease end date
+    const start = new Date(contractStartDate)
+    start.setMonth(start.getMonth() + parseInt(monthsPaid, 10))
+    const leaseEndDate = start.toISOString().split('T')[0]
+
+    const payload = {
+      contract_start_date: contractStartDate,
+      lease_end_date: leaseEndDate,
+      past_debt_amount: parseFloat(pastDebtAmount || '0'),
+    }
+
+    const { error: err } = await supabase.from('tenants').update(payload).eq('id', tenant.id)
+    
+    if (err) { setError(err.message); setLoading(false); return }
+    
+    router.refresh()
+    onClose()
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="bg-slate-900 border border-slate-700/50 rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900">
+          <h2 className="text-white font-semibold">Sajili Mkataba Mpya</h2>
+          <button onClick={onClose} className="text-slate-400 hover:text-white transition"><X size={18} /></button>
+        </div>
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {error && <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm">{error}</div>}
+
+          <div className="space-y-1.5">
+            <label className="text-sm text-slate-300 font-medium">Tarehe ya Kuanza</label>
+            <input type="date" value={contractStartDate} onChange={(e) => setContractStartDate(e.target.value)} required
+              className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition" />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-sm text-slate-300 font-medium">Muda wa Mkataba (Miezi)</label>
+            <input type="number" value={monthsPaid} onChange={(e) => setMonthsPaid(e.target.value)} min={1} required
+              className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition" />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-sm text-slate-300 font-medium">Deni Linalobaki (Kama lipo)</label>
+            <input type="number" value={pastDebtAmount} onChange={(e) => setPastDebtAmount(e.target.value)} min={0} required
+              className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition" />
+          </div>
+
+          <div className="flex gap-3 pt-4">
+            <button type="button" onClick={onClose} className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white text-sm transition">Ghairi</button>
+            <button type="submit" disabled={loading} className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-medium text-sm flex items-center justify-center gap-2 transition">
+              {loading && <Loader2 size={14} className="animate-spin" />}
+              Sajili
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
 export function TenantsClient({ tenants, vacantUnits, landlord }: TenantsClientProps) {
   const router = useRouter()
   const [showForm, setShowForm] = useState(false)
   const [editTenant, setEditTenant] = useState<TenantWithUnit | undefined>()
+  const [renewTenant, setRenewTenant] = useState<TenantWithUnit | undefined>()
   const [search, setSearch] = useState('')
 
   const filtered = tenants.filter(
@@ -225,6 +330,11 @@ export function TenantsClient({ tenants, vacantUnits, landlord }: TenantsClientP
                         <Phone size={11} />
                         <span>{tenant.phone}</span>
                       </div>
+                      {(tenant.past_debt_amount ?? 0) > 0 && (
+                        <div className="inline-flex items-center px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-medium mt-1.5">
+                          Deni: {formatTZS(tenant.past_debt_amount ?? 0)}
+                        </div>
+                      )}
                     </td>
                     <td className="px-5 py-4">
                       <p className="text-slate-200 text-sm">{tenant.units?.custom_name}</p>
@@ -244,6 +354,13 @@ export function TenantsClient({ tenants, vacantUnits, landlord }: TenantsClientP
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => setRenewTenant(tenant)}
+                          title="Sajili Mkataba Mpya"
+                          className="p-1.5 text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition"
+                        >
+                          <Calendar size={14} />
+                        </button>
                         <button
                           onClick={() => { setEditTenant(tenant); setShowForm(true) }}
                           className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
@@ -271,6 +388,13 @@ export function TenantsClient({ tenants, vacantUnits, landlord }: TenantsClientP
           tenant={editTenant}
           vacantUnits={vacantUnits}
           onClose={() => { setShowForm(false); setEditTenant(undefined) }}
+        />
+      )}
+      
+      {renewTenant && (
+        <RenewContractForm
+          tenant={renewTenant}
+          onClose={() => setRenewTenant(undefined)}
         />
       )}
     </div>

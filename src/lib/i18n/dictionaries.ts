@@ -97,7 +97,7 @@ export const dictionaries = {
           apartment: 'Ghorofa / Apartment',
           house: 'Nyumba Nzima',
           commercial: 'Fremu ya Biashara',
-          swahili_room: 'Chumba Uswahilini',
+          swahili_room: 'Chumba',
           hostel_room: 'Chumba cha Hostel',
           bedsitter: 'Bedsitter / Studio',
         }
@@ -123,7 +123,11 @@ export const dictionaries = {
         phone: 'Namba ya Simu',
         rent_due_day: 'Tarehe ya Kulipa (1-31)',
         move_in_date: 'Tarehe ya Kuingia',
-        lease_end: 'Tarehe ya Kumaliza Mkataba (Hiari)'
+        lease_end: 'Tarehe ya Kumaliza Mkataba (Hiari)',
+        contract_start: 'Tarehe Kuanza Mkataba',
+        past_debt: 'Deni la Nyuma (Kama lipo)',
+        renew_contract: 'Sajili Mkataba Mpya',
+        no_debt: 'Hakuna Deni'
       }
     },
     // SMS
