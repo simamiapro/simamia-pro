@@ -4,7 +4,7 @@
  */
 
 const BEEM_BASE_URL = 'https://apisms.beem.africa/v1/send'
-const BEEM_SENDER_ID = 'SIMAMIA'
+const BEEM_SENDER_ID = process.env.BEEM_SENDER_ID || 'INFO'
 
 function getAuthToken(): string {
   const apiKey = process.env.BEEM_API_KEY
@@ -67,9 +67,9 @@ export async function sendSms(
     const data = await res.json()
 
     return {
-      success: res.ok,
-      status_code: res.status,
-      message: data?.message ?? (res.ok ? 'Sent' : 'Failed'),
+      success: res.ok && data?.code === 100, // Beem code 100 is Success
+      status_code: data?.code || res.status,
+      message: data?.message || JSON.stringify(data),
       raw: data,
     }
   } catch (error) {
