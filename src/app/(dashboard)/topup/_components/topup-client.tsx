@@ -18,8 +18,8 @@ export function TopUpClient({ landlord }: TopUpClientProps) {
   const [copied, setCopied] = useState(false)
 
   const totalCost = credits * CREDIT_PRICE
-  const lipaNumber = process.env.NEXT_PUBLIC_MPESA_LIPA_NAMBA ?? '123456'
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '255700000000'
+  const lipaNumber = process.env.NEXT_PUBLIC_MPESA_LIPA_NAMBA ?? '5319646'
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '255789051962'
   const waLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
     `Habari, nimetuma TZS ${totalCost.toLocaleString()} kwa Lipa Namba ${lipaNumber} kuomba credits ${credits} za SMS kwa Simamia Pro. Email yangu: [WEKA EMAIL YAKO]`
   )}`
@@ -142,7 +142,7 @@ export function TopUpClient({ landlord }: TopUpClientProps) {
                 content: (
                   <div className="flex items-center justify-between bg-slate-800 rounded-lg px-4 py-2.5 mt-2">
                     <div>
-                      <p className="text-xs text-slate-400">Lipa Namba</p>
+                      <p className="text-xs text-slate-400">Lipa Namba (RoPhi Studio)</p>
                       <p className="text-white font-bold text-lg tracking-widest">{lipaNumber}</p>
                     </div>
                     <button onClick={handleCopy} className="p-2 text-slate-400 hover:text-white transition">
@@ -177,7 +177,7 @@ export function TopUpClient({ landlord }: TopUpClientProps) {
                 step: '4',
                 title: 'Subiri uthibitisho',
                 content: (
-                  <p className="mt-1 text-slate-400 text-xs">Akaunti yako itasasishwa ndani ya masaa 24 baada ya kuthibitishwa.</p>
+                  <p className="mt-1 text-slate-400 text-xs">Akaunti yako itasasishwa ndani ya saa limoja baada ya kuthibitishwa.</p>
                 ),
               },
             ].map(({ step, title, content }) => (
