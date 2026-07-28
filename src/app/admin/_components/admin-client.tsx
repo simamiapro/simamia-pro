@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Crown, CreditCard, RefreshCw, Shield, User2, Phone, Calendar, Loader2 } from 'lucide-react'
+import { Crown, CreditCard, RefreshCw, Shield, User2, Phone, Calendar, Loader2, Trash2 } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import type { Landlord } from '@/types/database'
 
@@ -54,6 +54,25 @@ export function AdminClient({ landlords }: AdminClientProps) {
     }
     await apiCall('/api/admin/inject-credits', { landlordId: landlord.id, amount }, landlord.id, `credits-${landlord.id}`)
     setCreditsInput((prev) => ({ ...prev, [landlord.id]: '' }))
+  }
+
+  async function handleDelete(landlord: EnrichedLandlord) {
+    if (!confirm(`Uhakika unataka KUFUTA kabisa akaunti ya ${landlord.name || landlord.email}? Vyumba, mali, na wapangaji wao wote watafutwa!`)) return
+    
+    setLoading((prev) => ({ ...prev, [`delete-${landlord.id}`]: true }))
+    
+    const res = await fetch('/api/admin/delete-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': document.cookie.match(/admin_key=([^;]+)/)?.[1] ?? '' },
+      body: JSON.stringify({ landlordId: landlord.id }),
+    })
+    
+    if (res.ok) {
+      setLocalLandlords((prev) => prev.filter((l) => l.id !== landlord.id))
+    } else {
+      setLoading((prev) => ({ ...prev, [`delete-${landlord.id}`]: false }))
+      setMessage((prev) => ({ ...prev, [`delete-${landlord.id}`]: '✗ Hitilafu ya kufuta' }))
+    }
   }
 
   return (
@@ -179,9 +198,26 @@ export function AdminClient({ landlords }: AdminClientProps) {
                       </div>
                     </td>
 
-                    {/* ID (small) */}
-                    <td className="px-5 py-4">
-                      <p className="text-slate-600 text-xs font-mono truncate max-w-[80px]">{landlord.id}</p>
+                    {/* ID (small) & Delete Action */}
+                    <td className="px-5 py-4 text-right">
+                      <div className="flex flex-col items-end gap-2">
+                        <p className="text-slate-600 text-xs font-mono truncate max-w-[80px]">{landlord.id}</p>
+                        <button
+                          onClick={() => handleDelete(landlord)}
+                          disabled={loading[`delete-${landlord.id}`]}
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 rounded-lg transition disabled:opacity-50"
+                        >
+                          {loading[`delete-${landlord.id}`] ? (
+                            <Loader2 size={12} className="animate-spin" />
+                          ) : (
+                            <Trash2 size={12} />
+                          )}
+                          Futa Akaunti
+                        </button>
+                        {message[`delete-${landlord.id}`] && (
+                          <p className="text-xs text-red-400 mt-1">{message[`delete-${landlord.id}`]}</p>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
