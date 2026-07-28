@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
     // Send SMS to each recipient
     let sent = 0
     let failed = 0
+    let failureReason = ''
     const logs: Array<{
       landlord_id: string
       message_type: 'broadcast'
@@ -74,8 +75,12 @@ export async function POST(request: NextRequest) {
       const result = await sendSms(tenant.phone, message)
       const status = result.success ? 'sent' : 'failed'
 
-      if (result.success) sent++
-      else failed++
+      if (result.success) {
+        sent++
+      } else {
+        failed++
+        if (!failureReason) failureReason = result.message || 'Unknown error'
+      }
 
       logs.push({
         landlord_id: user.id,
@@ -98,7 +103,12 @@ export async function POST(request: NextRequest) {
 
     // Log all transactions
     if (logs.length > 0) {
-      await supabase.from('sms_logs').insert(logs)
+      const { error: logError } = await supabase.from('sms_logs').insert(logs)
+      if (logError) console.error('Failed to insert SMS logs:', logError)
+    }
+
+    if (sent === 0 && failed > 0) {
+      return NextResponse.json({ error: `Imeshindwa kutuma SMS. Sababu: ${failureReason}` }, { status: 400 })
     }
 
     return NextResponse.json({
