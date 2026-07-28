@@ -14,6 +14,7 @@ export default function RegisterPage() {
   const [step, setStep] = useState<1 | 2>(1)
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
+  const [password, setPassword] = useState('')
   const [otp, setOtp] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -30,6 +31,12 @@ export default function RegisterPage() {
       setLoading(false)
       return
     }
+    
+    if (password.length < 6) {
+      setError('Nenosiri lazima liwe na angalau herufi 6.')
+      setLoading(false)
+      return
+    }
 
     let formattedPhone = phone.trim()
     if (!formattedPhone.startsWith('+')) {
@@ -37,8 +44,9 @@ export default function RegisterPage() {
     }
 
     const supabase = createClient()
-    const { error: authError } = await supabase.auth.signInWithOtp({
+    const { error: authError } = await supabase.auth.signUp({
       phone: formattedPhone,
+      password: password,
       options: {
         data: {
           name,
@@ -140,6 +148,7 @@ export default function RegisterPage() {
                 <input
                   id="reg-phone"
                   type="tel"
+                  autoComplete="username"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   required
@@ -148,12 +157,31 @@ export default function RegisterPage() {
                 />
                 <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               </div>
-              <p className="text-xs text-slate-500 mt-1">Mfano: +255712345678 au +254712345678</p>
+            </div>
+
+            <div className="space-y-1.5">
+              <label htmlFor="reg-password" className="text-sm text-slate-300 font-medium">
+                {t.auth.password}
+              </label>
+              <div className="relative">
+                <input
+                  id="reg-password"
+                  type="password"
+                  autoComplete="new-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  placeholder="••••••••"
+                  className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-10 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
+                />
+                <KeyRound size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              </div>
+              <p className="text-xs text-slate-500 mt-1">Tengeneza nenosiri la kuingilia baadaye</p>
             </div>
 
             <button
               type="submit"
-              disabled={loading || phone.length < 9}
+              disabled={loading || phone.length < 9 || password.length < 6}
               className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 disabled:opacity-50 text-white font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30"
             >
               {loading ? <Loader2 size={16} className="animate-spin" /> : <UserPlus size={16} />}

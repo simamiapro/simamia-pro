@@ -24,6 +24,7 @@ const PROPERTY_TYPE_LABELS: Record<string, string> = {
   commercial: 'Fremu ya Biashara',
   bedsitter: 'Bedsitter',
   plot: 'Kipande cha Ardhi',
+  compound: 'Uswahilini / Compound',
 }
 
 export function PropertiesClient({ properties, landlord }: PropertiesClientProps) {
@@ -90,11 +91,13 @@ export function PropertiesClient({ properties, landlord }: PropertiesClientProps
                     </div>
                     <div className="min-w-0">
                       <p className="text-white font-semibold truncate">
-                        {PROPERTY_TYPE_LABELS[property.property_type] ?? property.property_type}
+                        {property.name || (PROPERTY_TYPE_LABELS[property.property_type] ?? property.property_type)}
                       </p>
                       <div className="flex items-center gap-1 text-slate-400 text-xs mt-0.5">
                         <MapPin size={11} />
                         <span className="truncate">{property.location}</span>
+                        <span className="mx-1">•</span>
+                        <span className="truncate">{PROPERTY_TYPE_LABELS[property.property_type] ?? property.property_type}</span>
                       </div>
                     </div>
                   </div>

@@ -5,27 +5,30 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Loader2, X } from 'lucide-react'
 import type { Property } from '@/types/database'
+import { useLanguage } from '@/lib/i18n/language-context'
 
 interface PropertyFormProps {
   property?: Property
   onClose: () => void
 }
 
-const PROPERTY_TYPES = [
-  { value: 'apartment', label: 'Ghorofa (Apartment)' },
-  { value: 'house', label: 'Nyumba ya Kawaida' },
-  { value: 'commercial', label: 'Fremu ya Biashara' },
-  { value: 'bedsitter', label: 'Bedsitter' },
-  { value: 'plot', label: 'Kipande cha Ardhi' },
-]
-
 export function PropertyForm({ property, onClose }: PropertyFormProps) {
   const router = useRouter()
+  const { t } = useLanguage()
   const isEditing = !!property
+  
+  const [name, setName] = useState(property?.name ?? '')
   const [propertyType, setPropertyType] = useState(property?.property_type ?? 'apartment')
   const [location, setLocation] = useState(property?.location ?? '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const PROPERTY_TYPES = [
+    { value: 'apartment', label: t.properties.form.types.apartment },
+    { value: 'house', label: t.properties.form.types.house },
+    { value: 'commercial', label: t.properties.form.types.commercial },
+    { value: 'compound', label: t.properties.form.types.compound },
+  ]
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -34,18 +37,18 @@ export function PropertyForm({ property, onClose }: PropertyFormProps) {
 
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { setError('Tafadhali ingia tena'); setLoading(false); return }
+    if (!user) { setError(t.common.error); setLoading(false); return }
 
     if (isEditing) {
       const { error: err } = await supabase
         .from('properties')
-        .update({ property_type: propertyType, location })
+        .update({ name, property_type: propertyType, location })
         .eq('id', property.id)
       if (err) { setError(err.message); setLoading(false); return }
     } else {
       const { error: err } = await supabase
         .from('properties')
-        .insert({ landlord_id: user.id, property_type: propertyType, location })
+        .insert({ landlord_id: user.id, name, property_type: propertyType, location })
       if (err) { setError(err.message); setLoading(false); return }
     }
 
@@ -57,7 +60,7 @@ export function PropertyForm({ property, onClose }: PropertyFormProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div className="bg-slate-900 border border-slate-700/50 rounded-2xl w-full max-w-md shadow-2xl">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-          <h2 className="text-white font-semibold">{isEditing ? 'Hariri Mali' : 'Ongeza Mali Mpya'}</h2>
+          <h2 className="text-white font-semibold">{isEditing ? t.common.edit : t.properties.add_new}</h2>
           <button onClick={onClose} className="text-slate-400 hover:text-white transition">
             <X size={18} />
           </button>
@@ -71,7 +74,19 @@ export function PropertyForm({ property, onClose }: PropertyFormProps) {
           )}
 
           <div className="space-y-1.5">
-            <label className="text-sm text-slate-300 font-medium">Aina ya Mali</label>
+            <label className="text-sm text-slate-300 font-medium">{t.properties.form.name}</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              placeholder="e.g. Mbezi Beach Apartments"
+              className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-sm text-slate-300 font-medium">{t.properties.form.type}</label>
             <select
               value={propertyType}
               onChange={(e) => setPropertyType(e.target.value)}
@@ -84,13 +99,13 @@ export function PropertyForm({ property, onClose }: PropertyFormProps) {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm text-slate-300 font-medium">Mahali (Eneo)</label>
+            <label className="text-sm text-slate-300 font-medium">{t.properties.form.location}</label>
             <input
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               required
-              placeholder="mfano: Kinondoni, Dar es Salaam"
+              placeholder="e.g. Kinondoni, Dar es Salaam"
               className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
             />
           </div>
@@ -101,7 +116,7 @@ export function PropertyForm({ property, onClose }: PropertyFormProps) {
               onClick={onClose}
               className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white hover:border-slate-600 text-sm transition"
             >
-              Ghairi
+              {t.common.cancel}
             </button>
             <button
               type="submit"
@@ -109,7 +124,7 @@ export function PropertyForm({ property, onClose }: PropertyFormProps) {
               className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-medium text-sm flex items-center justify-center gap-2 transition"
             >
               {loading && <Loader2 size={14} className="animate-spin" />}
-              {isEditing ? 'Hifadhi' : 'Ongeza'}
+              {isEditing ? t.common.save : t.common.add}
             </button>
           </div>
         </form>

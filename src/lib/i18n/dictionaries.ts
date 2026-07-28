@@ -80,7 +80,8 @@ export const dictionaries = {
         types: {
           apartment: 'Ghorofa / Vyumba (Apartment)',
           house: 'Nyumba ya Kujitegemea',
-          commercial: 'Fremu / Biashara'
+          commercial: 'Fremu / Biashara',
+          compound: 'Uswahilini / Compound (Vyumba Mchanganyiko)',
         }
       }
     },
@@ -259,7 +260,8 @@ export const dictionaries = {
         types: {
           apartment: 'Apartment',
           house: 'Standalone House',
-          commercial: 'Commercial / Frame'
+          commercial: 'Commercial / Shop',
+          compound: 'Compound / Swahili House (Mixed Units)',
         }
       }
     },

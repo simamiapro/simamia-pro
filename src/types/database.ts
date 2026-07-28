@@ -20,6 +20,7 @@ export interface Landlord {
 export interface Property {
   id: string
   landlord_id: string
+  name: string
   property_type: string
   location: string
   created_at: string

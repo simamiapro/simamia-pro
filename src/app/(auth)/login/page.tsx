@@ -11,15 +11,14 @@ import { useLanguage } from '@/lib/i18n/language-context'
 
 export default function LoginPage() {
   const router = useRouter()
-  const [step, setStep] = useState<1 | 2>(1)
   const [phone, setPhone] = useState('')
-  const [otp, setOtp] = useState('')
+  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const { t } = useLanguage()
 
-  async function handleSendOtp(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError(null)
@@ -31,36 +30,9 @@ export default function LoginPage() {
     }
 
     const supabase = createClient()
-    const { error: authError } = await supabase.auth.signInWithOtp({
+    const { error: authError } = await supabase.auth.signInWithPassword({
       phone: formattedPhone,
-    })
-
-    if (authError) {
-      console.error(authError)
-      setError(t.common.error + ': ' + authError.message)
-      setLoading(false)
-      return
-    }
-
-    setLoading(false)
-    setStep(2) // Move to OTP verification step
-  }
-
-  async function handleVerifyOtp(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-
-    let formattedPhone = phone.trim()
-    if (!formattedPhone.startsWith('+')) {
-      formattedPhone = '+' + formattedPhone
-    }
-
-    const supabase = createClient()
-    const { error: authError } = await supabase.auth.verifyOtp({
-      phone: formattedPhone,
-      token: otp.trim(),
-      type: 'sms',
+      password: password,
     })
 
     if (authError) {
@@ -100,82 +72,54 @@ export default function LoginPage() {
           </div>
         )}
 
-        {step === 1 ? (
-          <form onSubmit={handleSendOtp} className="space-y-4">
-            <div className="space-y-1.5">
-              <label htmlFor="phone" className="text-sm text-slate-300 font-medium">
-                {t.auth.phone}
-              </label>
-              <div className="relative">
-                <input
-                  id="phone"
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  required
-                  placeholder="+2557XXXXXXXX"
-                  className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-10 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
-                />
-                <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              </div>
-              <p className="text-xs text-slate-500 mt-1">Mfano: +255712345678 au +254712345678</p>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div className="space-y-1.5">
+            <label htmlFor="phone" className="text-sm text-slate-300 font-medium">
+              {t.auth.phone}
+            </label>
+            <div className="relative">
+              <input
+                id="phone"
+                type="tel"
+                autoComplete="username"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+                placeholder="+2557XXXXXXXX"
+                className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-10 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
+              />
+              <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             </div>
+          </div>
 
-            <button
-              type="submit"
-              disabled={loading || phone.length < 9}
-              className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 disabled:opacity-50 text-white font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30"
-            >
-              {loading ? <Loader2 size={16} className="animate-spin" /> : <LogIn size={16} />}
-              {loading ? t.auth.sending : t.auth.send_otp}
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={handleVerifyOtp} className="space-y-4">
-            <div className="space-y-1.5">
-              <label htmlFor="otp" className="text-sm text-slate-300 font-medium">
-                {t.auth.otp}
-              </label>
-              <div className="relative">
-                <input
-                  id="otp"
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  required
-                  placeholder="123456"
-                  maxLength={6}
-                  className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-10 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition text-center tracking-[0.5em] font-mono text-lg"
-                />
-                <KeyRound size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              </div>
-              <p className="text-xs text-slate-500 text-center mt-2">
-                Namba ya siri imetumwa kwenda: <br/><span className="text-slate-300 font-medium">{phone}</span>
-              </p>
+          <div className="space-y-1.5">
+            <label htmlFor="password" className="text-sm text-slate-300 font-medium">
+              {t.auth.password}
+            </label>
+            <div className="relative">
+              <input
+                id="password"
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+                className="w-full bg-slate-800/60 border border-slate-700 rounded-xl px-10 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition"
+              />
+              <KeyRound size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             </div>
+          </div>
 
-            <button
-              type="submit"
-              disabled={loading || otp.length !== 6}
-              className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 disabled:opacity-50 text-white font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30"
-            >
-              {loading ? <Loader2 size={16} className="animate-spin" /> : <LogIn size={16} />}
-              {loading ? t.auth.verifying : t.auth.verify_otp}
-            </button>
-            
-            <button
-              type="button"
-              onClick={() => {
-                setStep(1)
-                setOtp('')
-                setError(null)
-              }}
-              className="w-full text-sm text-slate-400 hover:text-white transition"
-            >
-              {t.common.back}
-            </button>
-          </form>
-        )}
+          <button
+            type="submit"
+            disabled={loading || phone.length < 9 || password.length < 6}
+            className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 disabled:opacity-50 text-white font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30"
+          >
+            {loading ? <Loader2 size={16} className="animate-spin" /> : <LogIn size={16} />}
+            {loading ? t.auth.logging_in : t.auth.login_btn}
+          </button>
+        </form>
 
         <p className="text-center text-sm text-slate-400 mt-6">
           {t.auth.no_account}{' '}
