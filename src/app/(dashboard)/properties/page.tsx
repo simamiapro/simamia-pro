@@ -14,7 +14,7 @@ export default async function PropertiesPage() {
     supabase.from('landlords').select('*').eq('id', user.id).single(),
     supabase
       .from('properties')
-      .select('*, units(id, custom_name, unit_type, monthly_rent, status, unit_photo_url)')
+      .select('*, units(id, custom_name, monthly_rent, status, unit_photo_url)')
       .eq('landlord_id', user.id)
       .order('created_at', { ascending: false }),
   ])
