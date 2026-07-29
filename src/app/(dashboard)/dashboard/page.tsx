@@ -164,7 +164,7 @@ export default async function DashboardPage() {
             <TrendingUp size={20} />
           </div>
           <div>
-            <p className="text-emerald-400/80 text-sm font-medium mb-1">Mapato ya Mwezi Huu</p>
+            <p className="text-emerald-400/80 text-sm font-medium mb-1">{t.dashboard.cashflow.this_month_revenue}</p>
             <h3 className="text-3xl font-bold text-white">{formatTZS(currentMonthRevenue)}</h3>
           </div>
         </div>
@@ -176,9 +176,9 @@ export default async function DashboardPage() {
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
               <TrendingUp size={18} />
             </div>
-            <h2 className="text-lg font-semibold text-white">Mwenendo wa Mapato</h2>
+            <h2 className="text-lg font-semibold text-white">{t.dashboard.cashflow.revenue_trend}</h2>
           </div>
-          <RevenueChart data={chartData} />
+          <RevenueChart data={chartData} labelMapato={t.dashboard.cashflow.revenue} />
         </div>
 
         <div className="space-y-4">
@@ -187,10 +187,10 @@ export default async function DashboardPage() {
               <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
                 <Banknote size={18} />
               </div>
-              <h2 className="text-lg font-semibold text-white">Malipo ya Hivi Karibuni</h2>
+              <h2 className="text-lg font-semibold text-white">{t.dashboard.cashflow.recent_payments}</h2>
             </div>
             {recentPayments.length === 0 ? (
-              <p className="text-sm text-slate-500 text-center py-6">Hakuna malipo yaliyorekodiwa</p>
+              <p className="text-sm text-slate-500 text-center py-6">{t.dashboard.cashflow.no_payments}</p>
             ) : (
               <div className="space-y-3">
                 {recentPayments.map((p) => {
@@ -198,7 +198,7 @@ export default async function DashboardPage() {
                   return (
                     <div key={p.id} className="flex justify-between items-center bg-slate-800/40 p-3 rounded-xl border border-slate-700/30">
                       <div>
-                        <p className="text-white text-sm font-medium">{tAny?.name || 'Mpangaji'}</p>
+                        <p className="text-white text-sm font-medium">{tAny?.name || t.dashboard.cashflow.tenant}</p>
                         <p className="text-slate-400 text-xs">{formatDate(p.payment_date)}</p>
                       </div>
                       <p className="text-emerald-400 text-sm font-bold">+{formatTZS(p.amount)}</p>

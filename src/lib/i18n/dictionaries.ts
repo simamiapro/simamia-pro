@@ -63,8 +63,16 @@ export const dictionaries = {
       },
       premium_banner: {
         title: 'Premium Inahitajika',
-        desc: 'Pata kifurushi cha premium kuona taarifa zote na kutuma SMS za mawaidha.',
+        desc: 'Pata kifurushi kwenye top-up kuona taarifa zote na kutuma SMS za mawaidha.',
         btn: 'Boresha Akaunti',
+      },
+      cashflow: {
+        this_month_revenue: 'Mapato ya Mwezi Huu',
+        revenue_trend: 'Mwenendo wa Mapato',
+        recent_payments: 'Malipo ya Hivi Karibuni',
+        no_payments: 'Hakuna malipo yaliyorekodiwa',
+        tenant: 'Mpangaji',
+        revenue: 'Mapato'
       }
     },
     // Properties -> Projects
@@ -121,13 +129,22 @@ export const dictionaries = {
       form: {
         name: 'Jina Kamili',
         phone: 'Namba ya Simu',
-
         move_in_date: 'Tarehe ya Kuingia',
         lease_end: 'Tarehe ya Kumaliza Mkataba (Hiari)',
         contract_start: 'Tarehe Kuanza Mkataba',
         past_debt: 'Deni la Nyuma (Kama lipo)',
         renew_contract: 'Sajili Mkataba Mpya',
+        record_payment: 'Rekodi Malipo',
         no_debt: 'Hakuna Deni'
+      },
+      record_payment: {
+        title: 'Rekodi Malipo',
+        amount: 'Kiasi (TZS)',
+        date: 'Tarehe ya Malipo',
+        method: 'Njia ya Malipo',
+        cash: 'Taslimu (Cash)',
+        bank: 'Benki',
+        mobile: 'Simu (M-Pesa, TigoPesa nk.)',
       }
     },
     // SMS
@@ -259,8 +276,16 @@ export const dictionaries = {
       },
       premium_banner: {
         title: 'Premium Required',
-        desc: 'Upgrade to a premium plan to see all insights and send automated SMS reminders.',
+        desc: 'Get a premium package in top-up to view all insights and send automated SMS reminders.',
         btn: 'Upgrade Account',
+      },
+      cashflow: {
+        this_month_revenue: 'This Month\'s Revenue',
+        revenue_trend: 'Revenue Trend',
+        recent_payments: 'Recent Payments',
+        no_payments: 'No payments recorded yet',
+        tenant: 'Tenant',
+        revenue: 'Revenue'
       }
     },
     // Properties -> Projects
@@ -317,9 +342,19 @@ export const dictionaries = {
       form: {
         name: 'Full Name',
         phone: 'Phone Number',
-
         move_in_date: 'Move-in Date',
-        lease_end: 'Lease End Date (Optional)'
+        lease_end: 'Lease End Date (Optional)',
+        renew_contract: 'Renew Contract',
+        record_payment: 'Record Payment'
+      },
+      record_payment: {
+        title: 'Record Payment',
+        amount: 'Amount (TZS)',
+        date: 'Payment Date',
+        method: 'Payment Method',
+        cash: 'Cash',
+        bank: 'Bank Transfer',
+        mobile: 'Mobile Money (M-Pesa, etc.)',
       }
     },
     // SMS

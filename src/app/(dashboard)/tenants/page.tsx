@@ -3,9 +3,12 @@ import { createClient } from '@/lib/supabase/server'
 import { TenantsClient } from './_components/tenants-client'
 import type { Landlord } from '@/types/database'
 
+import { getDictionary } from '@/lib/i18n/server'
+
 export const metadata = { title: 'Wapangaji' }
 
 export default async function TenantsPage() {
+  const t = await getDictionary()
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -40,6 +43,7 @@ export default async function TenantsPage() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vacantUnits={(vacantUnits ?? []) as any[]}
       landlord={landlord as Landlord}
+      t={t}
     />
   )
 }

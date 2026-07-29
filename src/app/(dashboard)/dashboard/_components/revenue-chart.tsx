@@ -3,7 +3,7 @@
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { formatTZS } from '@/lib/utils'
 
-export function RevenueChart({ data }: { data: { name: string, total: number }[] }) {
+export function RevenueChart({ data, labelMapato = 'Mapato' }: { data: { name: string, total: number }[], labelMapato?: string }) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={data}>
@@ -24,7 +24,7 @@ export function RevenueChart({ data }: { data: { name: string, total: number }[]
         <Tooltip
           cursor={{ fill: '#1e293b' }}
           contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#f8fafc', borderRadius: '8px' }}
-          formatter={(value: any) => [formatTZS(value as number), 'Mapato']}
+          formatter={(value: any) => [formatTZS(value as number), labelMapato]}
         />
         <Bar dataKey="total" fill="#34d399" radius={[4, 4, 0, 0]} />
       </BarChart>
