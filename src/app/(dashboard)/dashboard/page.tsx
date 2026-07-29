@@ -1,10 +1,11 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { Building2, Users, Home, MessageSquare, TrendingUp, AlertCircle, Clock, CreditCard, Star, CheckCircle2, CalendarDays } from 'lucide-react'
+import { Building2, Users, Home, MessageSquare, TrendingUp, AlertCircle, Clock, CreditCard, Star, CheckCircle2, CalendarDays, Banknote } from 'lucide-react'
 import Link from 'next/link'
-import { daysUntilDate, formatTZS, getContractStatusColor } from '@/lib/utils'
+import { RevenueChart } from './_components/revenue-chart'
+import { daysUntilDate, formatTZS, getContractStatusColor, formatDate } from '@/lib/utils'
 import { getDictionary } from '@/lib/i18n/server'
-import type { Landlord } from '@/types/database'
+import type { Landlord, Payment } from '@/types/database'
 
 export const metadata = {
   title: 'Dashibodi',
@@ -21,6 +22,7 @@ export default async function DashboardPage() {
     { data: properties },
     { data: units },
     { data: tenants },
+    { data: payments },
   ] = await Promise.all([
     supabase.from('landlords').select('*').eq('id', user.id).single(),
     supabase.from('properties').select('*').eq('landlord_id', user.id),
@@ -32,6 +34,11 @@ export default async function DashboardPage() {
       .from('tenants')
       .select('*, units!inner(property_id, monthly_rent, custom_name, properties!inner(landlord_id, location))')
       .eq('units.properties.landlord_id', user.id),
+    supabase
+      .from('payments')
+      .select('*, tenants!inner(name, units!inner(properties!inner(landlord_id)))')
+      .eq('tenants.units.properties.landlord_id', user.id)
+      .order('payment_date', { ascending: false })
   ])
 
   const metrics = {
@@ -40,6 +47,28 @@ export default async function DashboardPage() {
     occupiedUnits: units?.filter((u) => u.status === 'occupied').length ?? 0,
     tenants: tenants?.length ?? 0
   }
+
+  // Cashflow calculations
+  const now = new Date()
+  const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+  const currentMonthRevenue = (payments ?? [])
+    .filter(p => new Date(p.payment_date) >= currentMonthStart)
+    .reduce((sum, p) => sum + Number(p.amount), 0)
+
+  const monthNames = ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ago", "Sep", "Okt", "Nov", "Des"]
+  const chartData = []
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+    const monthTotal = (payments ?? [])
+      .filter(p => {
+        const pd = new Date(p.payment_date)
+        return pd.getMonth() === d.getMonth() && pd.getFullYear() === d.getFullYear()
+      })
+      .reduce((sum, p) => sum + Number(p.amount), 0)
+    chartData.push({ name: monthNames[d.getMonth()], total: monthTotal })
+  }
+
+  const recentPayments = (payments ?? []).slice(0, 5)
 
   const occupiedUnits = metrics.occupiedUnits
   const vacantUnits = metrics.units - occupiedUnits
@@ -127,6 +156,57 @@ export default async function DashboardPage() {
           <div>
             <p className="text-slate-400 text-sm font-medium mb-1">{t.dashboard.metrics.total_tenants}</p>
             <h3 className="text-2xl font-bold text-white">{metrics.tenants}</h3>
+          </div>
+        </div>
+
+        <div className="bg-slate-800/40 border border-slate-700/50 rounded-2xl p-5 flex items-start gap-4 md:col-span-2 lg:col-span-4 bg-gradient-to-br from-emerald-500/10 to-transparent">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+            <TrendingUp size={20} />
+          </div>
+          <div>
+            <p className="text-emerald-400/80 text-sm font-medium mb-1">Mapato ya Mwezi Huu</p>
+            <h3 className="text-3xl font-bold text-white">{formatTZS(currentMonthRevenue)}</h3>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <div className="lg:col-span-2 bg-slate-800/20 border border-slate-700/50 rounded-2xl p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+              <TrendingUp size={18} />
+            </div>
+            <h2 className="text-lg font-semibold text-white">Mwenendo wa Mapato</h2>
+          </div>
+          <RevenueChart data={chartData} />
+        </div>
+
+        <div className="space-y-4">
+          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                <Banknote size={18} />
+              </div>
+              <h2 className="text-lg font-semibold text-white">Malipo ya Hivi Karibuni</h2>
+            </div>
+            {recentPayments.length === 0 ? (
+              <p className="text-sm text-slate-500 text-center py-6">Hakuna malipo yaliyorekodiwa</p>
+            ) : (
+              <div className="space-y-3">
+                {recentPayments.map((p) => {
+                  const tAny = p.tenants as any
+                  return (
+                    <div key={p.id} className="flex justify-between items-center bg-slate-800/40 p-3 rounded-xl border border-slate-700/30">
+                      <div>
+                        <p className="text-white text-sm font-medium">{tAny?.name || 'Mpangaji'}</p>
+                        <p className="text-slate-400 text-xs">{formatDate(p.payment_date)}</p>
+                      </div>
+                      <p className="text-emerald-400 text-sm font-bold">+{formatTZS(p.amount)}</p>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>

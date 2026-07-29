@@ -62,6 +62,16 @@ export interface SmsLog {
   timestamp: string
 }
 
+export interface Payment {
+  id: string
+  tenant_id: string
+  amount: number
+  payment_date: string
+  payment_method: string
+  reference_number: string | null
+  created_at: string
+}
+
 // Joined / extended types used in UI
 export interface PropertyWithUnits extends Property {
   units: Unit[]
