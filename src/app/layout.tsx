@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist } from 'next/font/google'
 import './globals.css'
 
@@ -15,10 +15,20 @@ export const metadata: Metadata = {
   description:
     'Jukwaa la kisasa kwa wamiliki wa nyumba Tanzania kusimamia mali, wapangaji, na ukusanyaji wa kodi kwa urahisi.',
   keywords: ['property management', 'Tanzania', 'landlord', 'kodi', 'rent', 'M-Pesa'],
+  appleWebApp: {
+    capable: true,
+    title: 'Simamia Pro',
+    statusBarStyle: 'black-translucent',
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#0f172a',
 }
 
 import { LanguageProvider } from '@/lib/i18n/language-context'
 import { getLocale } from '@/lib/i18n/server'
+import { PwaRegistrar } from '@/components/pwa-registrar'
 
 export default async function RootLayout({
   children,
@@ -32,6 +42,7 @@ export default async function RootLayout({
       <body className="bg-background text-foreground antialiased min-h-screen">
         <LanguageProvider initialLocale={locale}>
           {children}
+          <PwaRegistrar />
         </LanguageProvider>
       </body>
     </html>
